@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Create Voucher Templates, CP INAdik">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Voucher Set</title>
+    <link href="/static/hs_cover.png" rel="icon">
+    <style>
+      .file-input-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+      }
+      .file-input {
+        position: relative;
+        width: 100%;
+        margin-bottom: 20px;
+      }
+      .file-input input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+
+        cursor: pointer;
+      }
+      .file-input .btn {
+        width: 100%;
+      }
+      .checkbox-group td {
+        padding: 5px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="card">
+        <div class="card-header text-center">
+          <h1>Print Voucher</h1>
+        </div>
+        <div class="card-body">
+          <form id="formutama" method="POST" enctype="multipart/form-data">
+            <label for="excelInput pt-2" class="file-input-label">Upload Excel File</label>
+            <input type="file" class="form-control" id="excelInput" name="excel" required accept=".xlsx, .xls">
+            
+            <label for="logoInput pt-2" class="file-input-label">Upload Logo</label>
+            <input type="file" class="form-control" id="logoInput" name="logo" accept="image/*">
+
+            <div class="checkbox-group pt-2">
+              <h2 class="h5">Configuration Options</h2>
+              <table class="table table-borderless">
+                <tbody>
+                  <tr>
+                    <td><label><input type="checkbox" name="config" value="userGroup"> User Group</label></td>
+                    <td><label><input type="checkbox" name="config" value="price"> Price</label></td>
+                  </tr>
+                  <tr>
+                    <td><label><input type="checkbox" name="config" value="period"> Period</label></td>
+                    <td><label><input type="checkbox" name="config" value="name"> Name</label></td>
+                  </tr>
+                  <tr>
+                    <td><label><input type="checkbox" name="config" value="alias"> Alias</label></td>
+                    <td><label><input type="checkbox" name="config" value="device"> Device</label></td>
+                  </tr>
+                  <tr>
+                    <td><label><input type="checkbox" name="config" value="macBinding"> MAC Binding</label></td>
+                    <td><label><input type="checkbox" name="config" value="uploadDownload"> Upload/Download</label></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="btn-group  w-100" role="group" aria-label="Basic example">
+                <button type="reset" class="btn btn-danger">reset</button>
+                <button type="submit" class="btn btn-primary">Print</button>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    
+  </body>
+</html>
