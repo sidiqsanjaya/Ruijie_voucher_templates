@@ -15,8 +15,8 @@ app.app_context()
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 compress = Compress()
 compress.init_app(app)
-dev='development' 
-# dev='production'
+# dev="development" 
+dev="production"
 ports = '8080'
 
 @app.route('/', methods=['GET', 'POST'])
@@ -40,8 +40,16 @@ def parse_excel(file):
         data.append([cell for cell in row])
     return data
 
-def create_vouch(data, configs, logo_path=None):
-    return render_template('A4.html', data=data, configs=configs, logo_path=logo_path)
+def create_vouch(data, configs, templs, logo_path=None):
+
+    if templs == 1:
+        return render_template('A4.html', data=data, configs=configs, logo_path=logo_path)
+    elif templs == 2:
+        return render_template('thermal.html', data=data, configs=configs, logo_path=logo_path)
+    elif templs == 3:
+        return render_template('thermal_cafe.html', data=data, configs=configs, logo_path=logo_path)
+    else:
+        return 'invalid templates'
 
 def voucher(request):
     if request.method == 'POST':
@@ -55,6 +63,8 @@ def voucher(request):
 
             configs = request.form.getlist('config')
 
+            templs = int(request.form['templates'])
+
             logo_path = None
             logo_set = None
             if 'logo' in request.files and allowed_file(request.files['logo'].filename, {'png', 'jpg', 'jpeg'}):
@@ -62,8 +72,12 @@ def voucher(request):
                 logo_path = f'{app.root_path}/static/tmp/{logo_file.filename}'
                 logo_file.save(logo_path)
                 logo_set = f'/static/tmp/{logo_file.filename}'
+            if 'namevoucher' in request.form:
+                namevoucher = request.form['namevoucher']
+                if namevoucher != '':
+                    configs.append(f'namevoucher: {namevoucher}')
     
-            response = create_vouch(excel_data_without_first_element, configs, logo_set)
+            response = create_vouch(excel_data_without_first_element, configs, templs, logo_set)
             
             return response
         else:
@@ -86,8 +100,8 @@ if __name__ == "__main__":
         if dev == 'production':
             logging.basicConfig(level=logging.ERROR, format='%(levelname)s - %(message)s')
             minify(app=app)
-            app.run(threaded=True, use_reloader=False)
+            app.run(debug=False, threaded=True, use_reloader=False)
         else:
             logging.basicConfig(level=logging.DEBUG, format='%(levelname)s - %(message)s')
             minify(app=app, html=False, js=False, cssless=False)
-            app.run(threaded=True)
+            app.run(debug=True, threaded=True)
