@@ -73,8 +73,8 @@
         }
     </style>
 </head>
-<!-- <body onload="window.print()"> -->
-<body>    
+<body onload="window.print()">
+<!-- <body>     -->
     <!-- <body> -->
     {% for section in data %}
         {% if section[2] == 'In use' or section[2] == 'Expired' %}
@@ -117,10 +117,17 @@
                     </tr>
                     {% endif %}
                     {% if 'price' in configs %}
-                    <tr>
-                        <th> Harga </th>
-                        <td>: Rp.{{ section[4] * 1000 }}</td>
-                    </tr>
+                        {% if not section[4] %}
+                        <tr>
+                            <th> Harga </th>
+                            <td>Rp. -</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <th> Harga </th>
+                            <td>Rp.{{ section[4] * 1000 }}</td>
+                        </tr>
+                        {% endif %}
                     {% endif %}
                     {% if 'period' in configs %}
                     <tr>

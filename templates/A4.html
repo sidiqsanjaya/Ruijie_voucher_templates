@@ -45,7 +45,6 @@
         }
 
         #num {
-            float: left;
             display: inline-block;
         }
 
@@ -72,11 +71,15 @@
         }
     </style>
 </head>
-<body onload="window.print()">
+<body onload="">
+<!-- <body onload="window.print()"> -->
+    
+    {% set num = namespace(value=0) %}
     {% for section in data %}
         {% if section[2] == 'In use' or section[2] == 'Expired' %}
 
         {% else %}
+            {% set num.value = num.value + 1 %}
 
             {% if logo_path %}
             <table class="voucher"  style="background-image: url('{{logo_path}}'); background-size: cover; background-position: center; z-index: -1;">
@@ -85,10 +88,41 @@
             {% endif %}
                 <thead>
                     <tr>
-                        <th colspan="2" style="text-align: center;">
-                            <h1>{{ section[0] }}</h1>
-                            <!-- <span id="num">{{ section[0] }}</span> -->
-                        </th>
+                        {% set namevoucher_found = namespace(value=false) %}
+                        {% set namevoucher_name = namespace(value='') %}
+                        {% for config in configs %}
+                            {% if 'namevoucher:' in config and not namevoucher_found.value %}
+                                {% set namevoucher_found.value = true %}
+                                {% set namevoucher_name.value = config.split(': ')[1] %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if namevoucher_found.value %}
+                            <th colspan="2" style="text-align: center;">
+                                <table style="width: 100%; border: none; border-bottom: 1px solid black; margin: 0; padding: 0;">
+                                    <tr>
+                                        <td style="text-align: left; border: none; padding: 0;">
+                                            <h1 style="margin: 0; display: inline;">{{ namevoucher_name.value }} </h1>
+                                        </td>
+                                        {% if 'number' in configs %}
+                                        <td style="text-align: right; border: none; padding: 0;">
+                                            <h1 style="margin: 0; display: inline;">[{{ num.value }}]</h1>
+                                        </td>
+                                        {% endif %}
+                                    </tr>
+                                </table>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th colspan="2" style="text-align: center;">
+                               <h1>{{ section[0] }}</h1>
+                            </th>
+                        {% else %}
+                            <th colspan="2" style="text-align: center;">
+                                
+                                <span id="num">{{ num.value }}</span>
+                            </th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -99,10 +133,17 @@
                     </tr>
                     {% endif %}
                     {% if 'price' in configs %}
-                    <tr>
-                        <th> Harga </th>
-                        <td>Rp.{{ section[4] * 1000 }}</td>
-                    </tr>
+                        {% if not section[4] %}
+                        <tr>
+                            <th> Harga </th>
+                            <td>Rp. -</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <th> Harga </th>
+                            <td>Rp.{{ section[4] * 1000 }}</td>
+                        </tr>
+                        {% endif %}
                     {% endif %}
                     {% if 'period' in configs %}
                     <tr>

@@ -15,8 +15,8 @@ app.app_context()
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 compress = Compress()
 compress.init_app(app)
-# dev="development" 
-dev="production"
+dev="development" 
+# dev="production"
 ports = '8080'
 
 @app.route('/', methods=['GET', 'POST'])
