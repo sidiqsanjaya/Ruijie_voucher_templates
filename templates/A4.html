@@ -71,9 +71,9 @@
         }
     </style>
 </head>
-<body onload="">
-<!-- <body onload="window.print()"> -->
-    
+<!-- <body onload=""> -->
+<body onload="window.print()">
+
     {% set num = namespace(value=0) %}
     {% for section in data %}
         {% if section[2] == 'In use' or section[2] == 'Expired' %}
@@ -115,13 +115,14 @@
                         </tr>
                         <tr>
                             <th colspan="2" style="text-align: center;">
-                               <h1>{{ section[0] }}</h1>
+                                <h1>{{ section[0] }}</h1>
                             </th>
                         {% else %}
-                            <th colspan="2" style="text-align: center;">
-                                
-                                <span id="num">{{ num.value }}</span>
-                            </th>
+                            <tr>
+                                <th colspan="2" style="text-align: center;">
+                                    <h1>{{ section[0] }}</h1>
+                                </th>
+                            
                         {% endif %}
                     </tr>
                 </thead>
