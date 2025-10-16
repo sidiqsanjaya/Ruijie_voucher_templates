@@ -107,7 +107,7 @@
                         {% else %}
                         <tr>
                             <th> Harga </th>
-                            <td>Rp.{{ section[4] * 1000 }}</td>
+                            <td>Rp.{{ (section[4]|int) * 1000 }}</td>
                         </tr>
                         {% endif %}
                     {% endif %}
