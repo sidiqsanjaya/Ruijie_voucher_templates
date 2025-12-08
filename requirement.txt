@@ -1,0 +1,6 @@
+Flask
+werkzeug
+Flask-Compress
+flask-minify
+APScheduler
+openpyxl
