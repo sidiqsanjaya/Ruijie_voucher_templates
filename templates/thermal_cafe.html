@@ -23,17 +23,17 @@
         }
 
         table.voucher {
-            /* display: inline-block; */
             /* border: 2px solid black; */
-            margin: 1px;
+            margin: 2px 0;
             padding: 5px;
             box-sizing: border-box;
-            /* width: auto; */
-            /* clear: both; */
+            width: 80mm;              /* FIX LEBAR THERMAL 80MM */
+            max-width: 80mm;          /* mencegah overflow */
+            background: #fff;
         }
 
         @page {
-            size: 80mm 200mm;
+            size: 80mm;
             margin: 4mm;
         }
 
@@ -74,41 +74,74 @@
 </head>
 <body onload="window.print()">
 <!-- <body>     -->
-    <!-- <body> -->
+    {% set num = namespace(value=0) %}
+    ----------------------------------------------------------------
     {% for section in data %}
         {% if section[2] == 'In use' or section[2] == 'Expired' %}
 
         {% else %}
-            ----------------------------------------------------------
+            {% set num.value = num.value + 1 %}
+            
             {% if logo_path %}
-            <table class="voucher"  style="background-image: url('{{logo_path}}'); background-size: cover; background-position: center; z-index: -1;">
+            <table class="voucher">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: center; border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+                            <img src="{{ logo_path }}" alt="Logo" style="max-height: 40px; margin: 0; padding: 0;">
+                        </th>
+                    </tr>
+                </thead>
             {% else %}
             <table class="voucher">
             {% endif %}
                 <thead>
                     <tr>
-                        <th colspan="2">
-                            <h1>Enjoy Free Wifi</h1>
-                            <!-- <span id="num">{{ section[0] }}</span> -->
-                        </th>
+                        {% set namevoucher_found = namespace(value=false) %}
+                        {% set namevoucher_name = namespace(value='') %}
+                        {% set katakata_found = namespace(value=false) %}
+                        {% set katakata_name = namespace(value='') %}
+                        {% for config in configs %}
+                            {% if 'namevoucher:' in config and not namevoucher_found.value %}
+                                {% set namevoucher_found.value = true %}
+                                {% set namevoucher_name.value = config.split(': ')[1] %}
+                            {% endif %}
+                            {% if 'katakata:' in config and not katakata_found.value %}
+                                {% set katakata_found.value = true %}
+                                {% set katakata_name.value = config.split(': ')[1] %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if namevoucher_found.value %}
+                            <th colspan="2" style="text-align: center;">
+                                <table style="width: 100%; border: none; border-bottom: 1px solid black; margin: 0; padding: 0;">
+                                    <tr>
+                                        <td style="text-align: left; border: none; padding: 0;">
+                                            <h1 style="margin: 0; display: inline;">{{ namevoucher_name.value }} </h1>
+                                        </td>
+                                        {% if 'number' in configs %}
+                                        <td style="text-align: right; border: none; padding: 0;">
+                                            <h1 style="margin: 0; display: inline;">[{{ num.value }}]</h1>
+                                        </td>
+                                        {% endif %}
+                                    </tr>
+                                </table>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th colspan="2" style="text-align: center;">
+                                <h1>{{ section[0] }}</h1>
+                            </th>
+                        {% else %}
+                            <tr>
+                                <th colspan="2" style="text-align: center;">
+                                    <h1>{{ section[0] }}</h1>
+                                </th>
+                            
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
-                    {% for config in configs %}
-                        {% if 'namevoucher:' in config %}
-                            <tr>
-                                <th>Wifi Name</th>
-                                <td>: {{ config.split(': ')[1] }}</td>  <!-- Ambil nilai setelah ':' -->
-                            </tr>
-                        {% endif %}
-                    {% endfor %}
-                    <tr>
-                        <th>Voucher Code</th>
-                        <th>
-                            <h1>: {{ section[0] }}</h1>
-                            <!-- <span id="num">{{ section[0] }}</span> -->
-                        </th>
-                    </tr>
+                    
                     {% if 'userGroup' in configs %}
                     <tr>
                         <th>UGroup</th>
@@ -119,12 +152,12 @@
                         {% if not section[4] %}
                         <tr>
                             <th> Harga </th>
-                            <td>Rp. -</td>
+                            <td>: Rp. -</td>
                         </tr>
                         {% else %}
                         <tr>
                             <th> Harga </th>
-                            <td>Rp.{{ (section[4]|int) * 1000 }}</td>
+                            <td>: Rp.{{ (section[4]|int) * 1000 }}</td>
                         </tr>
                         {% endif %}
                     {% endif %}
@@ -142,7 +175,7 @@
                     {% endif %}
                     {% if 'macBinding' in configs %}
                     <tr>
-                        <th>LMac</th>
+                        <th>Lock Mac</th>
                         <td>: {{ section[14] }}</td>
                     </tr>
                     {% endif %}
@@ -164,11 +197,20 @@
                         <td>: {{ section[16] }}</td>
                     </tr>
                     {% endif %}
+                    {% if katakata_found.value %}
+                    <tr>
+                        <td colspan="2" style="padding:0; text-align:center;">
+                            <!-- hr yang full-width dan tipis -->
+                            <hr style="border:0; border-top:1px solid #000; margin:6px 0; width:100%;">
+                            <!-- teks judul/kalimat, bisa ditebalkan atau diubah ukurannya -->
+                            <div style="font-size:12px; font-weight:700; margin:2px 0;">{{ katakata_name.value }}</div>
+                        </td>
+                    </tr>
+                    {% endif %}
                 </tbody>
             </table>
         {% endif %}
+        ----------------------------------------------------------------
     {% endfor %}
-    ----------------------------------------------------------
-
 </body>
 </html>

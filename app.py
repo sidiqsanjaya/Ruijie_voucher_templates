@@ -45,8 +45,10 @@ def create_vouch(data, configs, templs, logo_path=None):
     if templs == 1:
         return render_template('A4.html', data=data, configs=configs, logo_path=logo_path)
     elif templs == 2:
-        return render_template('thermal.html', data=data, configs=configs, logo_path=logo_path)
+        return render_template('A4_2.html', data=data, configs=configs, logo_path=logo_path)
     elif templs == 3:
+        return render_template('thermal.html', data=data, configs=configs, logo_path=logo_path)
+    elif templs == 4:
         return render_template('thermal_cafe.html', data=data, configs=configs, logo_path=logo_path)
     else:
         return 'invalid templates'
@@ -76,6 +78,10 @@ def voucher(request):
                 namevoucher = request.form['namevoucher']
                 if namevoucher != '':
                     configs.append(f'namevoucher: {namevoucher}')
+            if 'katakata' in request.form:
+                katakata = request.form['katakata']
+                if katakata != '':
+                    configs.append(f'katakata: {katakata}')
     
             response = create_vouch(excel_data_without_first_element, configs, templs, logo_set)
             

@@ -13,7 +13,7 @@
             background-color: #FFFFFF;
             font-size: 14px;
             font-family: 'Helvetica', Arial, sans-serif;
-            margin: 0px;
+            margin: 5px;
             print-color-adjust: exact;
             -webkit-print-color-adjust: exact;
             display: flex;
@@ -82,7 +82,14 @@
             {% set num.value = num.value + 1 %}
 
             {% if logo_path %}
-            <table class="voucher"  style="background-image: url('{{logo_path}}'); background-size: cover; background-position: center; z-index: -1;">
+            <table class="voucher">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: center; border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+                            <img src="{{ logo_path }}" alt="Logo" style="max-height: 40px; margin: 0; padding: 0;">
+                        </th>
+                    </tr>
+                </thead>
             {% else %}
             <table class="voucher">
             {% endif %}
@@ -90,10 +97,16 @@
                     <tr>
                         {% set namevoucher_found = namespace(value=false) %}
                         {% set namevoucher_name = namespace(value='') %}
+                        {% set katakata_found = namespace(value=false) %}
+                        {% set katakata_name = namespace(value='') %}
                         {% for config in configs %}
                             {% if 'namevoucher:' in config and not namevoucher_found.value %}
                                 {% set namevoucher_found.value = true %}
                                 {% set namevoucher_name.value = config.split(': ')[1] %}
+                            {% endif %}
+                            {% if 'katakata:' in config and not katakata_found.value %}
+                                {% set katakata_found.value = true %}
+                                {% set katakata_name.value = config.split(': ')[1] %}
                             {% endif %}
                         {% endfor %}
                         
@@ -160,7 +173,7 @@
                     {% endif %}
                     {% if 'macBinding' in configs %}
                     <tr>
-                        <th>LMac</th>
+                        <th>Lock Mac</th>
                         <td>{{ section[14] }}</td>
                     </tr>
                     {% endif %}
@@ -180,6 +193,16 @@
                     <tr>
                         <th>Speed</th>
                         <td>{{ section[16] }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if katakata_found.value %}
+                    <tr>
+                        <td colspan="2" style="padding:0; text-align:center;">
+                            <!-- hr yang full-width dan tipis -->
+                            <hr style="border:0; border-top:1px solid #000; margin:6px 0; width:100%;">
+                            <!-- teks judul/kalimat, bisa ditebalkan atau diubah ukurannya -->
+                            <div style="font-size:12px; font-weight:700; margin:2px 0;">{{ katakata_name.value }}</div>
+                        </td>
                     </tr>
                     {% endif %}
                 </tbody>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Create Voucher Templates, CP INAdik">
-    <title>Thermal Voucher</title>
+    <title>A4 Voucher</title>
     <link href="/static/hs_cover.png" rel="icon">
     <style>
         body {
@@ -13,28 +13,27 @@
             background-color: #FFFFFF;
             font-size: 14px;
             font-family: 'Helvetica', Arial, sans-serif;
-            margin: 1px;
+            margin: 5px;
             print-color-adjust: exact;
             -webkit-print-color-adjust: exact;
             display: flex;
             flex-wrap: wrap;
-            justify-content: flex-center;
+            justify-content: flex-start;
             align-items: flex-start;
         }
 
         table.voucher {
+            display: inline-block;
             border: 2px solid black;
-            margin: 2px 0;
+            margin: 1px;
             padding: 5px;
             box-sizing: border-box;
-            width: 80mm;              /* FIX LEBAR THERMAL 80MM */
-            max-width: 80mm;          /* mencegah overflow */
-            background: #fff;
+            width: auto;
         }
 
         @page {
-            size: 80mm 200mm;
-            margin: 4mm;
+            size: A4;
+            margin: 5mm;
         }
 
         @media print {
@@ -50,7 +49,7 @@
         }
 
         h1 {
-            font-size: 20px;
+            font-size: 18px;
             margin: 0 0 0px;
         }
 
@@ -71,15 +70,16 @@
             text-align: left;
         }
     </style>
-<!-- </head> -->
+</head>
+<!-- <body onload=""> -->
 <body onload="window.print()">
-    <body>
+
     {% set num = namespace(value=0) %}
     {% for section in data %}
         {% if section[2] == 'In use' or section[2] == 'Expired' %}
 
         {% else %}
-            {% set num.value = num.value + 1 %} 
+            {% set num.value = num.value + 1 %}
 
             {% if logo_path %}
             <table class="voucher">
@@ -173,7 +173,7 @@
                     {% endif %}
                     {% if 'macBinding' in configs %}
                     <tr>
-                        <th>Lock Mac</th>
+                        <th>LMac</th>
                         <td>{{ section[14] }}</td>
                     </tr>
                     {% endif %}
@@ -197,17 +197,14 @@
                     {% endif %}
                     {% if katakata_found.value %}
                     <tr>
-                        <td colspan="2" style="padding:0; text-align:center;">
-                            <!-- hr yang full-width dan tipis -->
-                            <hr style="border:0; border-top:1px solid #000; margin:6px 0; width:100%;">
-                            <!-- teks judul/kalimat, bisa ditebalkan atau diubah ukurannya -->
-                            <div style="font-size:12px; font-weight:700; margin:2px 0;">{{ katakata_name.value }}</div>
-                        </td>
+                        
+                        <td style="text-align: center;"><hr>{{ katakata_name.value }}</td>
                     </tr>
                     {% endif %}
                 </tbody>
             </table>
         {% endif %}
     {% endfor %}
+    
 </body>
 </html>
