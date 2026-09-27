@@ -1,146 +1,1895 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Create Voucher Templates, CP INAdik Or Siddiq Sanjaya Bakti">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <title>Ruijie Voucher Smaller SSB</title>
-    <link href="/static/hs_cover.png" rel="icon">
-    <style>
-      .file-input-label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: bold;
-      }
-      .file-input {
-        position: relative;
-        width: 100%;
-        margin-bottom: 20px;
-      }
-      .file-input input[type="file"] {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+<html lang="id">
 
-        cursor: pointer;
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description"
+    content="Ruijie Voucher Generator & Live Studio - Generator template voucher Ruijie Cloud interaktif dengan live preview dan kustomisasi ukuran real-time.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Ruijie Voucher Studio Pro">
+  <title>Ruijie Voucher Studio Pro & Live Customizer</title>
+  <link href="/static/hs_cover.png" rel="icon">
+
+  <!-- Google Fonts & Bootstrap 5 & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+    rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <!-- SheetJS, QRCode.js & Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <style>
+    :root {
+      --font-family-base: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --bg-canvas: #0f172a;
+      --bg-panel: #1e293b;
+      --bg-card: #334155;
+      --border-color: #475569;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+
+      /* Voucher Dynamic Variables for Preview & Print */
+      --v-font-family: 'Plus Jakarta Sans', sans-serif;
+      --v-width: 58mm;
+      --v-min-height: auto;
+      --v-margin: 2mm;
+      --v-padding: 6px;
+      --v-bg-color: #ffffff;
+      --v-text-color: #000000;
+      --v-border-color: #000000;
+      --v-border-width: 1.5px;
+      --v-border-style: solid;
+      --v-border-radius: 4px;
+      --v-code-size: 16px;
+      --v-title-size: 13px;
+      --v-table-size: 11px;
+      --v-notes-size: 10px;
+      --v-logo-max-h: 36px;
+      --v-qr-size: 55px;
+      --page-size: A4;
+      --page-margin: 5mm;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-family-base);
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Top Navigation Bar */
+    .top-navbar {
+      background: rgba(30, 41, 59, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .brand-badge {
+      background: var(--accent-gradient);
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #fff;
+    }
+
+    /* Main Workspace Layout (Sidebar + Live Preview) */
+    .workspace-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 65px);
+    }
+
+    @media (min-width: 992px) {
+      .workspace-wrapper {
+        flex-direction: row;
       }
-      .file-input .btn {
-        width: 100%;
+    }
+
+    /* Left Control Sidebar */
+    .controls-sidebar {
+      width: 100%;
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border-color);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    @media (min-width: 992px) {
+      .controls-sidebar {
+        width: 440px;
+        min-width: 400px;
+        max-width: 480px;
       }
-      .checkbox-group td {
-        padding: 5px 0;
+    }
+
+    .sidebar-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.5);
+    }
+
+    /* Modern Tabs in Sidebar */
+    .nav-tabs-modern {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(15, 23, 42, 0.3);
+      padding: 6px 12px 0 12px;
+      gap: 4px;
+      overflow-x: auto;
+    }
+
+    .nav-tabs-modern .tab-btn {
+      color: var(--text-muted);
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: transparent;
+      border-radius: 6px 6px 0 0;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-tabs-modern .tab-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-tabs-modern .tab-btn.active {
+      color: #60a5fa;
+      border-bottom-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .tab-content-area {
+      padding: 20px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .tab-panel-item {
+      display: none;
+    }
+
+    .tab-panel-item.active {
+      display: block;
+    }
+
+    /* Control Elements & Inputs */
+    .control-group {
+      margin-bottom: 20px;
+    }
+
+    .control-label {
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .control-label .value-badge {
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.15);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    .form-control-dark,
+    .form-select-dark {
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      color: #f8fafc;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+      width: 100%;
+    }
+
+    .form-control-dark:focus,
+    .form-select-dark:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+      background: #0f172a;
+      color: #fff;
+      outline: none;
+    }
+
+    /* File Drop Zone */
+    .dropzone-box {
+      border: 2px dashed #475569;
+      border-radius: 12px;
+      padding: 20px 16px;
+      text-align: center;
+      background: rgba(15, 23, 42, 0.4);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .dropzone-box:hover,
+    .dropzone-box.dragover {
+      border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .dropzone-box input[type="file"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 5;
+    }
+
+    /* Custom Checkbox Cards */
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .custom-check-item {
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.825rem;
+      font-weight: 500;
+      color: #e2e8f0;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s;
+    }
+
+    .custom-check-item:hover {
+      border-color: #64748b;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .custom-check-item input[type="checkbox"] {
+      accent-color: #3b82f6;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    /* Presets Chips */
+    .preset-chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .preset-chip {
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      color: #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.775rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .preset-chip:hover {
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+
+    .preset-chip.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* Range Sliders */
+    .form-range-custom {
+      accent-color: #38bdf8;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    /* Right Live Preview Canvas Area */
+    .preview-canvas-container {
+      flex: 1;
+      background: #090d16;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);
+      background-size: 20px 20px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Preview Canvas Toolbar */
+    .preview-toolbar {
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      z-index: 10;
+    }
+
+    .preview-scroll-viewport {
+      flex: 1;
+      overflow: auto;
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    /* Paper Simulator (A4 & Thermal Sheet) */
+    .paper-sheet {
+      background: #ffffff;
+      color: #000000;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      transition: transform 0.2s ease, width 0.3s ease;
+      transform-origin: top center;
+      margin-bottom: 50px;
+      min-height: 297mm;
+      width: 210mm;
+      padding: var(--page-margin);
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      justify-content: flex-start;
+      box-sizing: border-box;
+    }
+
+    .paper-sheet.thermal-mode {
+      width: 80mm;
+      min-height: 200mm;
+      padding: 3mm;
+      justify-content: center;
+    }
+
+    .paper-sheet.thermal-58-mode {
+      width: 58mm;
+      min-height: 150mm;
+      padding: 2mm;
+      justify-content: center;
+    }
+
+    /* ========================================================
+       VOUCHER CARD STYLING (LIVE REALTIME DYNAMIC)
+       ======================================================== */
+    .voucher-card {
+      background-color: var(--v-bg-color);
+      color: var(--v-text-color);
+      font-family: var(--v-font-family);
+      border: var(--v-border-width) var(--v-border-style) var(--v-border-color);
+      border-radius: var(--v-border-radius);
+      margin: var(--v-margin);
+      padding: var(--v-padding);
+      width: var(--v-width);
+      min-height: var(--v-min-height);
+      box-sizing: border-box;
+      display: inline-block;
+      page-break-inside: avoid;
+      break-inside: avoid;
+      position: relative;
+      overflow: hidden;
+      vertical-align: top;
+    }
+
+    .voucher-header {
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .voucher-logo-img {
+      max-height: var(--v-logo-max-h);
+      max-width: 100%;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 4px auto;
+    }
+
+    .voucher-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--v-border-color);
+      padding-bottom: 3px;
+      margin-bottom: 4px;
+    }
+
+    .voucher-wifi-title {
+      font-size: var(--v-title-size);
+      font-weight: 800;
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1.2;
+    }
+
+    .voucher-num-badge {
+      font-size: calc(var(--v-title-size) * 0.9);
+      font-weight: 800;
+      opacity: 0.85;
+    }
+
+    .voucher-code-hero {
+      text-align: center;
+      padding: 4px 0;
+      margin: 2px 0 6px 0;
+      background: rgba(0, 0, 0, 0.04);
+      border-radius: 4px;
+    }
+
+    .voucher-code-text {
+      font-size: var(--v-code-size);
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      margin: 0;
+      line-height: 1.2;
+      color: var(--v-text-color);
+      word-break: break-all;
+    }
+
+    .voucher-body-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--v-table-size);
+      margin-bottom: 4px;
+    }
+
+    .voucher-body-table th {
+      text-align: left;
+      font-weight: 700;
+      padding: 1.5px 3px 1.5px 0;
+      white-space: nowrap;
+      width: 38%;
+      color: var(--v-text-color);
+      opacity: 0.85;
+    }
+
+    .voucher-body-table td {
+      text-align: left;
+      padding: 1.5px 0;
+      color: var(--v-text-color);
+      font-weight: 600;
+      word-break: break-word;
+    }
+
+    .voucher-footer-notes {
+      border-top: 1px dashed var(--v-border-color);
+      padding-top: 4px;
+      margin-top: 4px;
+      font-size: var(--v-notes-size);
+      text-align: center;
+      font-weight: 700;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .voucher-qr-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 4px 0;
+    }
+
+    .voucher-qr-wrap img,
+    .voucher-qr-wrap canvas {
+      max-width: var(--v-qr-size) !important;
+      max-height: var(--v-qr-size) !important;
+    }
+
+    /* Print CSS Dynamic Injection */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
       }
-      
-    </style>
-  </head>
-  <body>
-    <main class="flex-shrink-0">
-      <div class="container mt-5">
-        <div class="card">
-          <div class="card-header text-center">
-            <h1>Print Voucher Ruijie, but Smaller</h1>
+
+      .top-navbar,
+      .controls-sidebar,
+      .preview-toolbar,
+      .no-print {
+        display: none !important;
+      }
+
+      .workspace-wrapper {
+        display: block !important;
+        height: auto !important;
+      }
+
+      .preview-canvas-container {
+        background: transparent !important;
+        background-image: none !important;
+        overflow: visible !important;
+      }
+
+      .preview-scroll-viewport {
+        padding: 0 !important;
+        display: block !important;
+        overflow: visible !important;
+      }
+
+      .paper-sheet {
+        box-shadow: none !important;
+        margin: 0 !important;
+        transform: none !important;
+        width: 100% !important;
+        min-height: auto !important;
+        padding: var(--page-margin) !important;
+      }
+
+      .voucher-card {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        -webkit-region-break-inside: avoid;
+        box-shadow: none !important;
+      }
+
+      @page {
+        margin: var(--page-margin);
+        size: var(--page-size);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Top Navbar -->
+  <header class="top-navbar no-print">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <a href="/" class="brand-logo">
+        <img src="/static/hs_cover.png" alt="Logo" width="30" height="30" class="rounded">
+        <span>Ruijie Voucher Studio <span class="brand-badge">PRO LIVE</span></span>
+      </a>
+
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-outline-info btn-sm fw-semibold" id="btnLoadSample"
+          title="Coba dengan data contoh Ruijie">
+          <i class="bi bi-lightning-charge-fill me-1"></i> Muat Data Contoh
+        </button>
+        <button type="button" class="btn btn-outline-light btn-sm" id="btnResetSettings"
+          title="Kembalikan semua slider ke default">
+          <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+        </button>
+        <button type="button" class="btn btn-primary btn-sm fw-bold px-3 shadow-sm" id="btnPrintTop">
+          <i class="bi bi-printer-fill me-1"></i> Cetak Voucher (Print)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Workspace Wrapper -->
+  <div class="workspace-wrapper">
+
+    <!-- Left Controls Panel -->
+    <aside class="controls-sidebar no-print">
+      <div class="sidebar-header">
+        <div class="fw-bold text-white d-flex align-items-center gap-2">
+          <i class="bi bi-sliders text-primary"></i> Pengaturan & Desain Live
+        </div>
+        <span class="badge bg-dark border border-secondary text-info" id="badgeVoucherCount">0 Voucher</span>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="nav-tabs-modern" id="sidebarNavTabs">
+        <button class="tab-btn active" data-tab-target="tab-data" type="button">
+          <i class="bi bi-file-earmark-excel me-1"></i> Data
+        </button>
+        <button class="tab-btn" data-tab-target="tab-layout" type="button">
+          <i class="bi bi-aspect-ratio me-1"></i> Ukuran
+        </button>
+        <button class="tab-btn" data-tab-target="tab-theme" type="button">
+          <i class="bi bi-palette me-1"></i> Tema
+        </button>
+        <button class="tab-btn" data-tab-target="tab-typography" type="button">
+          <i class="bi bi-fonts me-1"></i> Teks
+        </button>
+        <button class="tab-btn" data-tab-target="tab-fields" type="button">
+          <i class="bi bi-check2-square me-1"></i> Kolom
+        </button>
+      </nav>
+
+      <!-- Tab Content Area -->
+      <div class="tab-content-area">
+
+        <!-- ================= TAB 1: DATA & INFO ================= -->
+        <div class="tab-panel-item active" id="tab-data">
+
+          <!-- Excel Dropzone -->
+          <div class="control-group">
+            <label class="control-label">File Excel Ruijie (.xlsx / .xls)</label>
+            <div class="dropzone-box" id="excelDropzone">
+              <input type="file" id="excelFileInput" accept=".xlsx,.xls">
+              <i class="bi bi-cloud-arrow-up-fill text-primary fs-3 d-block mb-1"></i>
+              <div class="fw-bold text-white fs-6" id="excelDropzoneText">Pilih atau Drag File Excel</div>
+              <div class="text-muted small">Export dari Ruijie Cloud -> Voucher</div>
+            </div>
           </div>
-          <div class="card-body">
-            <form id="formutama" method="POST" enctype="multipart/form-data">
-              <label for="excelInput pt-2" class="file-input-label">Upload File Excel</label>
-              <input type="file" class="form-control" id="excelInput" name="excel" required accept=".xlsx,.xls,application/*,*/*">
-              
-              <label for="logoInput pt-2" class="file-input-label">Upload Logo (kosongkan jika tidak ada)</label>
-              <input type="file" class="form-control" id="logoInput" name="logo" accept="image/*">
-              <label for="vouchername pt-2" class="file-input-label">Nama Wifi</label>
-              <input type="text" class="form-control" id="vouchername" name="namevoucher" placeholder="kosongkan jika tidak ada">
-              <label for="katakata pt-2" class="file-input-label">Kata Kata</label>
-              <input type="text" class="form-control" id="katakata" name="katakata" placeholder="kosongkan jika tidak ada">
-              <div class="checkbox-group pt-2">
-                <h2 class="h5">Configuration Options</h2>
-                <table class="table table-borderless">
-                  <tbody>
-                    <tr>
-                      <td><label><input type="checkbox" name="config" value="userGroup"> User Group <a data-bs-toggle="tooltip" title='Menampilkan bagian "User Group" yang dipakai di Voucher tersebut'><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
-                      </svg></a></label></td>
-                      <td><label><input type="checkbox" name="config" value="price"> Price <a data-bs-toggle="tooltip" title="Menampilkan Harga Voucher, ini akan dikonversi ke IDR, jadi 1$ ke 1000 biar mudah"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
-                      </svg></a></label></td>
-                      <td><label><input type="checkbox" name="config" value="number"> Number <a data-bs-toggle="tooltip" title="Menampilkan Urutan nomor 1 to n, wajib ada nama wifi"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
-                      </svg></a></label></td>
-                    </tr>
-                    <tr>
-                      <td><label><input type="checkbox" name="config" value="period"> Period <a data-bs-toggle="tooltip" title="Menampilkan Waktu Voucher yang diberikan ke User"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
-                      </svg></a></label></td>
-                      <td><label><input type="checkbox" name="config" value="name"> Name <a data-bs-toggle="tooltip" title="Menampilkan Nama User pada Voucher jika ada"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
-                      </svg></a></label></td>
-                    </tr>
-                    <tr>
-                      <td><label><input type="checkbox" name="config" value="alias"> Alias <a data-bs-toggle="tooltip" title="Sama kek nama sebelumnya cuma lebih keren"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
-                      </svg></a></label></td>
-                      <td><label><input type="checkbox" name="config" value="device"> Device <a data-bs-toggle="tooltip" title="Menampilkan Jumlah Perangkat yang bisa terhubung"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
-                      </svg></a></label></td>
-                    </tr>
-                    <tr>
-                      <td><label><input type="checkbox" name="config" value="macBinding"> MAC Binding <a data-bs-toggle="tooltip" title="Menampilkan status Mac Binding Aktif atau tidak"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
-                      </svg></a></label></td>
-                      <td><label><input type="checkbox" name="config" value="uploadDownload"> Upload/Download <a data-bs-toggle="tooltip" title="Menampilkan Upload dan Download yang diberikan"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
-                      </svg></a></label></td>
-                    </tr>
-                  </tbody>
-                </table>
+
+          <!-- Logo Dropzone -->
+          <div class="control-group">
+            <label class="control-label">Logo Voucher (Opsional)</label>
+            <div class="d-flex gap-2 align-items-center">
+              <div class="dropzone-box flex-grow-1 p-2" id="logoDropzone" style="min-height: 50px;">
+                <input type="file" id="logoFileInput" accept="image/*">
+                <span class="small text-white" id="logoText"><i class="bi bi-image me-1"></i> Upload Logo</span>
               </div>
-
-              <label for="templates pt-2" class="file-input-label">Templates Options</label>
-                <select class="form-select" id="templates" name="templates" aria-label="" required>
-                  <option selected value="1">A4 210mm x 297mm</option>
-                  <option value="2">A4 210mm x 297mm 2</option>
-                  <option value="3">Thermal 80mm x 200mm</option>
-                  <option value="4">Thermal 80mm x 200mm cafe</option>
-                </select>
-
-              <div class="btn-group pt-2 w-100" role="group" aria-label="Basic example">
-                  <button type="reset" class="btn btn-danger">reset</button>
-                  <button type="submit" class="btn btn-primary">Print</button>
-                </div>
-            </form>
+              <button type="button" class="btn btn-outline-danger btn-sm d-none" id="btnRemoveLogo" title="Hapus Logo">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
           </div>
+
+          <!-- Header Inputs -->
+          <div class="control-group">
+            <label class="control-label">Nama WiFi / Header</label>
+            <input type="text" class="form-control-dark" id="inputWifiName"
+              placeholder="Contoh: @WIFI-GRATIS / CAFE-NET" value="HOTSPOT RUIJIE">
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">Catatan Kaki / Pesan Tambahan</label>
+            <input type="text" class="form-control-dark" id="inputFooterNotes"
+              placeholder="Contoh: Login di 10.10.10.1 / Terimakasih">
+          </div>
+
+          <!-- Filter Status & Range -->
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="control-label">Filter Status</label>
+              <select class="form-select-dark" id="selectStatusFilter">
+                <option value="active_only" selected>Yang Belum Terpakai</option>
+                <option value="all">Semua Voucher</option>
+                <option value="in_use">Sudah terpakai</option>
+                <option value="expired">Sudah Expired</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="control-label">Batas Cetak Max</label>
+              <input type="number" class="form-control-dark" id="inputMaxVouchers" placeholder="Semua" min="1" step="1">
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ================= TAB 2: UKURAN & LAYOUT ================= -->
+        <div class="tab-panel-item" id="tab-layout">
+
+          <!-- Preset Paper Sizes -->
+          <div class="control-group">
+            <label class="control-label">Preset Kertas / Mode Cetak</label>
+            <div class="preset-chip-group">
+              <span class="preset-chip active" data-preset-layout="a4_grid"><i class="bi bi-grid-3x3 me-1"></i>A4 Grid
+                (Multi)</span>
+              <span class="preset-chip" data-preset-layout="a4_2col"><i class="bi bi-layout-split me-1"></i>A4
+                2-Kolom</span>
+              <span class="preset-chip" data-preset-layout="thermal_80"><i class="bi bi-receipt me-1"></i>Thermal
+                80mm</span>
+              <span class="preset-chip" data-preset-layout="thermal_58"><i class="bi bi-receipt me-1"></i>Thermal
+                58mm</span>
+            </div>
+          </div>
+
+          <!-- Slider: Voucher Width -->
+          <div class="control-group">
+            <div class="control-label">
+              <span>Lebar Voucher (Width)</span>
+              <span class="value-badge" id="valVoucherWidth">58 mm</span>
+            </div>
+            <input type="range" class="form-range-custom" id="rangeVoucherWidth" min="35" max="180" value="58" step="1">
+          </div>
+
+          <!-- Slider: Voucher Min Height -->
+          <div class="control-group">
+            <div class="control-label">
+              <span>Tinggi Minimum</span>
+              <span class="value-badge" id="valVoucherMinHeight">Otomatis</span>
+            </div>
+            <input type="range" class="form-range-custom" id="rangeVoucherMinHeight" min="0" max="120" value="0"
+              step="2">
+          </div>
+
+          <!-- Slider: Spacing / Margin Antar Voucher -->
+          <div class="control-group">
+            <div class="control-label">
+              <span>Jarak Antar Voucher (Gap / Margin)</span>
+              <span class="value-badge" id="valVoucherMargin">2 mm</span>
+            </div>
+            <input type="range" class="form-range-custom" id="rangeVoucherMargin" min="0" max="15" value="2" step="0.5">
+          </div>
+
+          <!-- Slider: Padding Dalam Voucher -->
+          <div class="control-group">
+            <div class="control-label">
+              <span>Padding Dalam Kartu</span>
+              <span class="value-badge" id="valVoucherPadding">6 px</span>
+            </div>
+            <input type="range" class="form-range-custom" id="rangeVoucherPadding" min="2" max="20" value="6" step="1">
+          </div>
+
+          <!-- Slider: Margin Kertas -->
+          <div class="control-group">
+            <div class="control-label">
+              <span>Margin Tepi Kertas Cetak</span>
+              <span class="value-badge" id="valPageMargin">5 mm</span>
+            </div>
+            <input type="range" class="form-range-custom" id="rangePageMargin" min="0" max="25" value="5" step="1">
+          </div>
+
+          <!-- Slider: Logo Max Height -->
+          <div class="control-group">
+            <div class="control-label">
+              <span>Tinggi Maksimal Logo</span>
+              <span class="value-badge" id="valLogoHeight">36 px</span>
+            </div>
+            <input type="range" class="form-range-custom" id="rangeLogoHeight" min="16" max="90" value="36" step="2">
+          </div>
+
+        </div>
+
+        <!-- ================= TAB 3: TEMA & GAYA ================= -->
+        <div class="tab-panel-item" id="tab-theme">
+
+          <!-- Preset Themes -->
+          <div class="control-group">
+            <label class="control-label">Preset Tema Warna</label>
+            <div class="preset-chip-group">
+              <span class="preset-chip active" data-theme="bw">🖨️ Hitam Putih (Hemat Tinta)</span>
+              <span class="preset-chip" data-theme="ruijie">🔵 Ruijie Blue</span>
+              <span class="preset-chip" data-theme="cafe">☕ Kafe Retro / Warm</span>
+              <span class="preset-chip" data-theme="emerald">🟢 Emerald Green</span>
+              <span class="preset-chip" data-theme="vip">🟣 VIP Violet</span>
+            </div>
+          </div>
+
+          <!-- Border Style -->
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="control-label">Gaya Garis (Border)</label>
+              <select class="form-select-dark" id="selectBorderStyle">
+                <option value="solid" selected>Solid (Garis Tegas)</option>
+                <option value="dashed">Dashed (✂️ Garis Gunting)</option>
+                <option value="dotted">Dotted (Titik-titik)</option>
+                <option value="double">Double</option>
+                <option value="none">Tanpa Garis (None)</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="control-label">Ketebalan Garis</label>
+              <select class="form-select-dark" id="selectBorderWidth">
+                <option value="1px">Tipis (1px)</option>
+                <option value="1.5px" selected>Standar (1.5px)</option>
+                <option value="2px">Tebal (2px)</option>
+                <option value="3px">Extra Tebal (3px)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Border Radius -->
+          <div class="control-group">
+            <div class="control-label">
+              <span>Sudut Lengkung (Border Radius)</span>
+              <span class="value-badge" id="valBorderRadius">4 px</span>
+            </div>
+            <input type="range" class="form-range-custom" id="rangeBorderRadius" min="0" max="20" value="4" step="1">
+          </div>
+
+          <!-- Custom Colors -->
+          <div class="row g-2 mb-3">
+            <div class="col-4">
+              <label class="control-label">Warna Garis</label>
+              <input type="color" class="form-control form-control-color w-100" id="colorBorder" value="#000000">
+            </div>
+            <div class="col-4">
+              <label class="control-label">Warna Teks</label>
+              <input type="color" class="form-control form-control-color w-100" id="colorText" value="#000000">
+            </div>
+            <div class="col-4">
+              <label class="control-label">Background</label>
+              <input type="color" class="form-control form-control-color w-100" id="colorBg" value="#ffffff">
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ================= TAB 4: TIPOGRAFI & UKURAN TEKS ================= -->
+        <div class="tab-panel-item" id="tab-typography">
+
+          <div class="control-group">
+            <label class="control-label">Jenis Font Utama</label>
+            <select class="form-select-dark" id="selectFontFamily">
+              <option value="'Plus Jakarta Sans', sans-serif" selected>Plus Jakarta Sans (Modern Clean)</option>
+              <option value="'Helvetica', Arial, sans-serif">Helvetica / Arial (Standard)</option>
+              <option value="'JetBrains Mono', monospace">JetBrains Mono (Tech Code)</option>
+              <option value="'Courier New', monospace">Courier New (Typewriter / Thermal)</option>
+              <option value="'Times New Roman', serif">Times New Roman (Classic)</option>
+            </select>
+          </div>
+
+          <!-- Voucher Code Size -->
+          <div class="control-group">
+            <div class="control-label">
+              <span>Ukuran Kode Voucher (PIN)</span>
+              <span class="value-badge" id="valCodeSize">16 px</span>
+            </div>
+            <input type="range" class="form-range-custom" id="rangeCodeSize" min="12" max="32" value="16" step="1">
+          </div>
+
+          <!-- WiFi Title Size -->
+          <div class="control-group">
+            <div class="control-label">
+              <span>Ukuran Judul WiFi</span>
+              <span class="value-badge" id="valTitleSize">13 px</span>
+            </div>
+            <input type="range" class="form-range-custom" id="rangeTitleSize" min="10" max="24" value="13" step="1">
+          </div>
+
+          <!-- Table Content Size -->
+          <div class="control-group">
+            <div class="control-label">
+              <span>Ukuran Teks Tabel Info</span>
+              <span class="value-badge" id="valTableSize">11 px</span>
+            </div>
+            <input type="range" class="form-range-custom" id="rangeTableSize" min="8" max="18" value="11" step="0.5">
+          </div>
+
+          <!-- Footer Notes Size -->
+          <div class="control-group">
+            <div class="control-label">
+              <span>Ukuran Catatan Kaki</span>
+              <span class="value-badge" id="valNotesSize">10 px</span>
+            </div>
+            <input type="range" class="form-range-custom" id="rangeNotesSize" min="8" max="16" value="10" step="0.5">
+          </div>
+
+        </div>
+
+        <!-- ================= TAB 5: KOLOM & FIELD DATA ================= -->
+        <div class="tab-panel-item" id="tab-fields">
+
+          <label class="control-label mb-2">Pilih Informasi Yang Ditampilkan Pada Voucher</label>
+
+          <div class="checkbox-grid mb-3">
+            <label class="custom-check-item">
+              <input type="checkbox" id="chkNumber" checked>
+              <span>Nomor Urut [1]..[n]</span>
+            </label>
+            <label class="custom-check-item">
+              <input type="checkbox" id="chkQrCode">
+              <span>QR Code Voucher</span>
+            </label>
+            <label class="custom-check-item">
+              <input type="checkbox" id="chkUserGroup" checked>
+              <span>User Group</span>
+            </label>
+            <label class="custom-check-item">
+              <input type="checkbox" id="chkPrice" checked>
+              <span>Harga (Rp)</span>
+            </label>
+            <label class="custom-check-item">
+              <input type="checkbox" id="chkPeriod" checked>
+              <span>Masa Aktif (Period)</span>
+            </label>
+            <label class="custom-check-item">
+              <input type="checkbox" id="chkName">
+              <span>Nama User</span>
+            </label>
+            <label class="custom-check-item">
+              <input type="checkbox" id="chkAlias">
+              <span>Alias</span>
+            </label>
+            <label class="custom-check-item">
+              <input type="checkbox" id="chkDevice">
+              <span>Batas Device</span>
+            </label>
+            <label class="custom-check-item">
+              <input type="checkbox" id="chkMacBinding">
+              <span>Lock MAC</span>
+            </label>
+            <label class="custom-check-item">
+              <input type="checkbox" id="chkSpeed">
+              <span>Kecepatan (Speed)</span>
+            </label>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">Pengali Konversi Harga</label>
+            <select class="form-select-dark" id="selectPriceMultiplier">
+              <option value="1000" selected>x 1.000 (Standar Ruijie $1 -> Rp 1.000)</option>
+              <option value="1">Nilai Asli (Tanpa dikali)</option>
+              <option value="15000">Kurs $1 -> Rp 15.000</option>
+            </select>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Sidebar Footer Actions -->
+      <div class="p-3 border-top border-secondary bg-dark d-flex gap-2">
+        <button type="button" class="btn btn-primary w-100 fw-bold py-2 shadow" id="btnPrintSidebar">
+          <i class="bi bi-printer-fill me-1"></i> CETAK VOUCHER (PRINT)
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- Right Live Preview Canvas -->
+    <main class="preview-canvas-container">
+
+      <!-- Preview Toolbar -->
+      <div class="preview-toolbar no-print">
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1"
+            id="lblCurrentPreset">
+            <i class="bi bi-eye-fill me-1"></i> Live Simulator A4 Grid
+          </span>
+          <span class="text-muted small" id="lblStatsInfo">Menampilkan 0 voucher aktif</span>
+        </div>
+
+        <!-- Zoom & Actions -->
+        <div class="d-flex align-items-center gap-2">
+          <div class="btn-group btn-group-sm">
+            <button type="button" class="btn btn-dark border-secondary text-light" id="btnZoomOut" title="Zoom Out"><i
+                class="bi bi-zoom-out"></i></button>
+            <span class="btn btn-dark border-secondary text-info disabled px-2" id="lblZoomLevel">100%</span>
+            <button type="button" class="btn btn-dark border-secondary text-light" id="btnZoomIn" title="Zoom In"><i
+                class="bi bi-zoom-in"></i></button>
+            <button type="button" class="btn btn-dark border-secondary text-light" id="btnZoomFit"
+              title="Fit Screen">Fit</button>
+          </div>
+
+          <button type="button" class="btn btn-outline-light btn-sm" id="btnExportHtml"
+            title="Download template HTML mandiri">
+            <i class="bi bi-download me-1"></i> Simpan HTML
+          </button>
+
+          <button type="button" class="btn btn-outline-info btn-sm" id="btnCopyCodes"
+            title="Salin daftar PIN voucher ke clipboard">
+            <i class="bi bi-clipboard me-1"></i> Copy PIN
+          </button>
         </div>
       </div>
+
+      <!-- Scrollable Sheet Viewport -->
+      <div class="preview-scroll-viewport" id="previewViewport">
+        <!-- The Printable Simulator Paper -->
+        <div class="paper-sheet" id="printablePaper">
+          <!-- Live Voucher Cards will be dynamically rendered here -->
+        </div>
+      </div>
+
     </main>
 
-    <footer class="footer mt-auto py-3 bg-light">
-      <div class="container">
-      <span class="text-muted">Dibuat <a href="https://www.facebook.com/sidiq.sanjaya.INAdik/" target="_blank">Siddiq Sanjaya Bakti</a> dan jangan lupa <a href="https://trakteer.id/INAdik/tip" target="_blank"><img id="wse-buttons-preview" src="https://cdn.trakteer.id/images/embed/trbtn-red-1.png?date=18-11-2023" height="40" style="border:0px;height:40px;" alt="Trakteer Saya"></a> kalo bisa</span>
-      <br>
-      <span class="text-muted">Source Code <a href="https://github.com/sidiqsanjaya/Ruijie_voucher_templates" target="_blank">Github</a> tinggal fork atau download</span>
-      </div>
-    </footer>
+  </div>
 
-    <script>
-      // Initialize tooltips
-      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
+  <!-- Toast Notification Container -->
+  <div class="position-fixed bottom-0 end-0 p-3 no-print" style="z-index: 9999;">
+    <div id="actionToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive"
+      aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body" id="toastMessage">
+          Pemberitahuan
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+          aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Application Logic -->
+  <script>
+    // ==========================================
+    // RUIJIE VOUCHER STUDIO - REALTIME ENGINE
+    // ==========================================
+
+    const state = {
+      rawRows: [],          // Parsed Excel Data (2D array)
+      filteredRows: [],     // Filtered for rendering
+      logoDataUrl: null,
+      zoom: 1.0,
+      currentPreset: 'a4_grid',
+      activeTheme: 'bw',
+      config: {
+        wifiName: 'HOTSPOT RUIJIE',
+        footerNotes: '',
+        statusFilter: 'active_only',
+        maxVouchers: null,
+        priceMultiplier: 1000,
+        // Dimensions
+        voucherWidth: 58,
+        voucherMinHeight: 0,
+        voucherMargin: 2,
+        voucherPadding: 6,
+        pageMargin: 5,
+        logoHeight: 36,
+        // Typography
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+        codeSize: 16,
+        titleSize: 13,
+        tableSize: 11,
+        notesSize: 10,
+        // Border & Colors
+        borderStyle: 'solid',
+        borderWidth: '1.5px',
+        borderRadius: 4,
+        borderColor: '#000000',
+        textColor: '#000000',
+        bgColor: '#ffffff',
+        // Visible Fields
+        showNumber: true,
+        showQrCode: false,
+        showUserGroup: true,
+        showPrice: true,
+        showPeriod: true,
+        showName: false,
+        showAlias: false,
+        showDevice: false,
+        showMacBinding: false,
+        showSpeed: false
+      }
+    };
+
+    // Realistic Sample Dataset for Instant Preview
+    const sampleVouchers = [
+      ["87429104", "1 Jam (Rp 2rb)", "Available", "", "2", "1 Hours", "Budi", "Santoso", "VIP-1", "", "", "", "", "", "1", "", "5 Mbps"],
+      ["39581023", "1 Jam (Rp 2rb)", "Available", "", "2", "1 Hours", "", "", "", "", "", "", "", "", "1", "", "5 Mbps"],
+      ["61928475", "3 Jam (Rp 5rb)", "Available", "", "5", "3 Hours", "", "", "", "", "", "", "", "", "2", "", "10 Mbps"],
+      ["40192837", "3 Jam (Rp 5rb)", "Available", "", "5", "3 Hours", "", "", "", "", "", "", "", "", "2", "", "10 Mbps"],
+      ["72819304", "1 Hari (Rp 10rb)", "Available", "", "10", "1 Days", "Andi", "", "GUEST", "", "", "", "", "", "1", "", "15 Mbps"],
+      ["51928374", "1 Hari (Rp 10rb)", "Available", "", "10", "1 Days", "", "", "", "", "", "", "", "", "1", "", "15 Mbps"],
+      ["92817402", "1 Hari (Rp 10rb)", "Available", "", "10", "1 Days", "", "", "", "", "", "", "", "", "1", "", "15 Mbps"],
+      ["10293847", "1 Jam (Rp 2rb)", "Available", "", "2", "1 Hours", "", "", "", "", "", "", "", "", "1", "", "5 Mbps"],
+      ["56473829", "1 Jam (Rp 2rb)", "In use", "", "2", "1 Hours", "", "", "", "", "", "", "", "", "1", "", "5 Mbps"],
+      ["38291047", "3 Jam (Rp 5rb)", "Expired", "", "5", "3 Hours", "", "", "", "", "", "", "", "", "1", "", "5 Mbps"]
+    ];
+
+    // DOM Elements Cache
+    const el = {
+      excelFileInput: document.getElementById('excelFileInput'),
+      excelDropzone: document.getElementById('excelDropzone'),
+      excelDropzoneText: document.getElementById('excelDropzoneText'),
+      logoFileInput: document.getElementById('logoFileInput'),
+      btnRemoveLogo: document.getElementById('btnRemoveLogo'),
+      logoText: document.getElementById('logoText'),
+      inputWifiName: document.getElementById('inputWifiName'),
+      inputFooterNotes: document.getElementById('inputFooterNotes'),
+      selectStatusFilter: document.getElementById('selectStatusFilter'),
+      inputMaxVouchers: document.getElementById('inputMaxVouchers'),
+      printablePaper: document.getElementById('printablePaper'),
+      badgeVoucherCount: document.getElementById('badgeVoucherCount'),
+      lblStatsInfo: document.getElementById('lblStatsInfo'),
+      lblZoomLevel: document.getElementById('lblZoomLevel'),
+      lblCurrentPreset: document.getElementById('lblCurrentPreset'),
+      // Sliders & Values
+      rangeVoucherWidth: document.getElementById('rangeVoucherWidth'),
+      valVoucherWidth: document.getElementById('valVoucherWidth'),
+      rangeVoucherMinHeight: document.getElementById('rangeVoucherMinHeight'),
+      valVoucherMinHeight: document.getElementById('valVoucherMinHeight'),
+      rangeVoucherMargin: document.getElementById('rangeVoucherMargin'),
+      valVoucherMargin: document.getElementById('valVoucherMargin'),
+      rangeVoucherPadding: document.getElementById('rangeVoucherPadding'),
+      valVoucherPadding: document.getElementById('valVoucherPadding'),
+      rangePageMargin: document.getElementById('rangePageMargin'),
+      valPageMargin: document.getElementById('valPageMargin'),
+      rangeLogoHeight: document.getElementById('rangeLogoHeight'),
+      valLogoHeight: document.getElementById('valLogoHeight'),
+      // Typography
+      selectFontFamily: document.getElementById('selectFontFamily'),
+      rangeCodeSize: document.getElementById('rangeCodeSize'),
+      valCodeSize: document.getElementById('valCodeSize'),
+      rangeTitleSize: document.getElementById('rangeTitleSize'),
+      valTitleSize: document.getElementById('valTitleSize'),
+      rangeTableSize: document.getElementById('rangeTableSize'),
+      valTableSize: document.getElementById('valTableSize'),
+      rangeNotesSize: document.getElementById('rangeNotesSize'),
+      valNotesSize: document.getElementById('valNotesSize'),
+      // Theme & Border
+      selectBorderStyle: document.getElementById('selectBorderStyle'),
+      selectBorderWidth: document.getElementById('selectBorderWidth'),
+      rangeBorderRadius: document.getElementById('rangeBorderRadius'),
+      valBorderRadius: document.getElementById('valBorderRadius'),
+      colorBorder: document.getElementById('colorBorder'),
+      colorText: document.getElementById('colorText'),
+      colorBg: document.getElementById('colorBg'),
+      // Checkboxes
+      chkNumber: document.getElementById('chkNumber'),
+      chkQrCode: document.getElementById('chkQrCode'),
+      chkUserGroup: document.getElementById('chkUserGroup'),
+      chkPrice: document.getElementById('chkPrice'),
+      chkPeriod: document.getElementById('chkPeriod'),
+      chkName: document.getElementById('chkName'),
+      chkAlias: document.getElementById('chkAlias'),
+      chkDevice: document.getElementById('chkDevice'),
+      chkMacBinding: document.getElementById('chkMacBinding'),
+      chkSpeed: document.getElementById('chkSpeed'),
+      selectPriceMultiplier: document.getElementById('selectPriceMultiplier'),
+      // Buttons
+      btnLoadSample: document.getElementById('btnLoadSample'),
+      btnResetSettings: document.getElementById('btnResetSettings'),
+      btnPrintTop: document.getElementById('btnPrintTop'),
+      btnPrintSidebar: document.getElementById('btnPrintSidebar'),
+      btnExportHtml: document.getElementById('btnExportHtml'),
+      btnCopyCodes: document.getElementById('btnCopyCodes'),
+      btnZoomIn: document.getElementById('btnZoomIn'),
+      btnZoomOut: document.getElementById('btnZoomOut'),
+      btnZoomFit: document.getElementById('btnZoomFit')
+    };
+
+    // Toast Utility
+    function showToast(msg, bgClass = 'text-bg-primary') {
+      const toastEl = document.getElementById('actionToast');
+      const toastMsg = document.getElementById('toastMessage');
+      if (!toastEl || !toastMsg) return;
+      toastEl.className = `toast align-items-center ${bgClass} border-0`;
+      toastMsg.innerText = msg;
+      if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
+        const bsToast = new bootstrap.Toast(toastEl, { delay: 3000 });
+        bsToast.show();
+      }
+    }
+
+    // Tab Switching Logic
+    function initTabs() {
+      const tabBtns = document.querySelectorAll('.nav-tabs-modern .tab-btn');
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.getAttribute('data-tab-target');
+          if (!targetId) return;
+
+          // Toggle tab button active state
+          tabBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          // Toggle tab panel active state
+          document.querySelectorAll('.tab-panel-item').forEach(panel => {
+            panel.classList.remove('active');
+          });
+          const targetPanel = document.getElementById(targetId);
+          if (targetPanel) {
+            targetPanel.classList.add('active');
+          }
+        });
+      });
+    }
+
+    // Apply Live CSS Variables
+    function updateCssVariables() {
+      const root = document.documentElement;
+      const c = state.config;
+
+      root.style.setProperty('--v-font-family', c.fontFamily);
+      root.style.setProperty('--v-width', `${c.voucherWidth}mm`);
+      root.style.setProperty('--v-min-height', c.voucherMinHeight > 0 ? `${c.voucherMinHeight}mm` : 'auto');
+      root.style.setProperty('--v-margin', `${c.voucherMargin}mm`);
+      root.style.setProperty('--v-padding', `${c.voucherPadding}px`);
+      root.style.setProperty('--page-margin', `${c.pageMargin}mm`);
+      root.style.setProperty('--v-logo-max-h', `${c.logoHeight}px`);
+
+      root.style.setProperty('--v-code-size', `${c.codeSize}px`);
+      root.style.setProperty('--v-title-size', `${c.titleSize}px`);
+      root.style.setProperty('--v-table-size', `${c.tableSize}px`);
+      root.style.setProperty('--v-notes-size', `${c.notesSize}px`);
+
+      root.style.setProperty('--v-border-style', c.borderStyle);
+      root.style.setProperty('--v-border-width', c.borderWidth);
+      root.style.setProperty('--v-border-radius', `${c.borderRadius}px`);
+      root.style.setProperty('--v-border-color', c.borderColor);
+      root.style.setProperty('--v-text-color', c.textColor);
+      root.style.setProperty('--v-bg-color', c.bgColor);
+
+      // Page size class handling
+      el.printablePaper.classList.remove('thermal-mode', 'thermal-58-mode');
+      if (state.currentPreset === 'thermal_80') {
+        el.printablePaper.classList.add('thermal-mode');
+        root.style.setProperty('--page-size', '80mm 200mm');
+      } else if (state.currentPreset === 'thermal_58') {
+        el.printablePaper.classList.add('thermal-58-mode');
+        root.style.setProperty('--page-size', '58mm 150mm');
+      } else {
+        root.style.setProperty('--page-size', 'A4');
+      }
+    }
+
+    // Filter Rows Based on Configuration
+    function computeFilteredRows() {
+      if (!state.rawRows || state.rawRows.length === 0) {
+        state.filteredRows = [];
+        return;
+      }
+
+      let list = [...state.rawRows];
+
+      // Status Filter
+      if (state.config.statusFilter === 'active_only') {
+        list = list.filter(r => {
+          const status = (r[2] || '').toString().trim().toLowerCase();
+          return status !== 'in use' && status !== 'in_use' && status !== 'expired' && status !== 'habis';
+        });
+      } else if (state.config.statusFilter === 'in_use') {
+        list = list.filter(r => {
+          const status = (r[2] || '').toString().trim().toLowerCase();
+          return status === 'in use' || status === 'in_use';
+        });
+      } else if (state.config.statusFilter === 'expired') {
+        list = list.filter(r => {
+          const status = (r[2] || '').toString().trim().toLowerCase();
+          return status === 'expired' || status === 'habis';
+        });
+      }
+
+      // Max Vouchers Limit
+      if (state.config.maxVouchers && state.config.maxVouchers > 0) {
+        list = list.slice(0, state.config.maxVouchers);
+      }
+
+      state.filteredRows = list;
+    }
+
+    // Format Rupiah
+    function formatPrice(val) {
+      if (!val || isNaN(val)) return 'Rp -';
+      const num = parseFloat(val) * state.config.priceMultiplier;
+      return 'Rp ' + Math.round(num).toLocaleString('id-ID');
+    }
+
+    // Render All Vouchers
+    function renderVouchers() {
+      updateCssVariables();
+      computeFilteredRows();
+
+      const totalActive = state.filteredRows.length;
+      const totalRaw = state.rawRows.length;
+      el.badgeVoucherCount.innerText = `${totalActive} Voucher`;
+      el.lblStatsInfo.innerText = `Menampilkan ${totalActive} dari total ${totalRaw} data`;
+
+      if (totalActive === 0) {
+        el.printablePaper.innerHTML = `
+          <div class="w-100 text-center py-5 text-muted">
+            <i class="bi bi-file-earmark-spreadsheet fs-1 d-block mb-3 opacity-50"></i>
+            <h5 class="text-dark fw-bold">Belum Ada Voucher Untuk Ditampilkan</h5>
+            <p class="small mb-3">Unggah file Excel Ruijie Cloud atau klik tombol di bawah untuk mencoba data contoh.</p>
+            <button class="btn btn-primary btn-sm fw-semibold" id="btnEmptySample">
+              <i class="bi bi-lightning-charge-fill me-1"></i> Muat Data Contoh
+            </button>
+          </div>
+        `;
+        const btnEmptySample = document.getElementById('btnEmptySample');
+        if (btnEmptySample) {
+          btnEmptySample.addEventListener('click', () => el.btnLoadSample.click());
+        }
+        return;
+      }
+
+      let html = '';
+      const c = state.config;
+
+      state.filteredRows.forEach((row, idx) => {
+        const code = row[0] || 'VOUCHER';
+        const ugroup = row[1] || '';
+        const price = row[4] || '';
+        const period = row[5] || '';
+        const name = (row[6] || '') + (row[7] ? ' ' + row[7] : '');
+        const alias = row[8] || '';
+        const mac = row[14] || '';
+        const device = row[14] || '';
+        const speed = row[16] || '';
+        const num = idx + 1;
+
+        // Build Voucher Card HTML
+        html += `
+          <div class="voucher-card" data-code="${code}">
+            <div class="voucher-header">
+              ${state.logoDataUrl ? `<img src="${state.logoDataUrl}" class="voucher-logo-img" alt="Logo">` : ''}
+              
+              ${c.wifiName ? `
+                <div class="voucher-top-bar">
+                  <h2 class="voucher-wifi-title">${escapeHtml(c.wifiName)}</h2>
+                  ${c.showNumber ? `<span class="voucher-num-badge">[${num}]</span>` : ''}
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="voucher-code-hero">
+              <div class="voucher-code-text">${escapeHtml(code)}</div>
+            </div>
+
+            ${c.showQrCode ? `<div class="voucher-qr-wrap" id="qr_${idx}"></div>` : ''}
+
+            <table class="voucher-body-table">
+              <tbody>
+                ${c.showUserGroup && ugroup ? `<tr><th>UGroup</th><td>: ${escapeHtml(ugroup)}</td></tr>` : ''}
+                ${c.showPrice && price ? `<tr><th>Harga</th><td>: ${formatPrice(price)}</td></tr>` : ''}
+                ${c.showPeriod && period ? `<tr><th>Aktif</th><td>: ${escapeHtml(period)}</td></tr>` : ''}
+                ${c.showName && name.trim() ? `<tr><th>Nama</th><td>: ${escapeHtml(name.trim())}</td></tr>` : ''}
+                ${c.showAlias && alias ? `<tr><th>Alias</th><td>: ${escapeHtml(alias)}</td></tr>` : ''}
+                ${c.showDevice && device ? `<tr><th>Device</th><td>: ${escapeHtml(device)} Perangkat</td></tr>` : ''}
+                ${c.showMacBinding && mac ? `<tr><th>Lock MAC</th><td>: ${escapeHtml(mac)}</td></tr>` : ''}
+                ${c.showSpeed && speed ? `<tr><th>Speed</th><td>: ${escapeHtml(speed)}</td></tr>` : ''}
+              </tbody>
+            </table>
+
+            ${c.footerNotes ? `
+              <div class="voucher-footer-notes">
+                ${escapeHtml(c.footerNotes)}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      });
+
+      el.printablePaper.innerHTML = html;
+
+      // Generate QR codes if enabled
+      if (c.showQrCode) {
+        state.filteredRows.forEach((row, idx) => {
+          const qrContainer = document.getElementById(`qr_${idx}`);
+          if (qrContainer && typeof QRCode !== 'undefined') {
+            qrContainer.innerHTML = '';
+            new QRCode(qrContainer, {
+              text: String(row[0] || ''),
+              width: 55,
+              height: 55,
+              colorDark: c.textColor || "#000000",
+              colorLight: c.bgColor || "#ffffff",
+              correctLevel: QRCode.CorrectLevel.M
+            });
+          }
+        });
+      }
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Parse Excel File in Browser with SheetJS & Fallback to API
+    function handleExcelFile(file) {
+      if (!file) return;
+
+      el.excelDropzoneText.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Membaca ${file.name}...`;
+
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        try {
+          if (typeof XLSX !== 'undefined') {
+            const workbook = XLSX.read(evt.target.result, { type: 'array' });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+
+            if (jsonData && jsonData.length > 1) {
+              const rows = jsonData.slice(1).filter(r => r && r.length > 0 && r[0]);
+              state.rawRows = rows;
+              el.excelDropzoneText.innerText = `${file.name} (${rows.length} baris)`;
+              showToast(`Berhasil memuat ${rows.length} voucher dari ${file.name}!`, "text-bg-success");
+              renderVouchers();
+              return;
+            }
+          }
+          // If sheetJS empty or failed, fallback to API
+          fallbackApiParse(file);
+        } catch (err) {
+          console.warn("SheetJS error, falling back to server API...", err);
+          fallbackApiParse(file);
+        }
+      };
+      reader.onerror = () => {
+        fallbackApiParse(file);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function fallbackApiParse(file) {
+      const formData = new FormData();
+      formData.append('excel', file);
+
+      fetch('/api/parse-excel', {
+        method: 'POST',
+        body: formData
       })
-      </script>
-  </body>
-  
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.rows) {
+            state.rawRows = data.rows;
+            el.excelDropzoneText.innerText = `${file.name} (${data.rows.length} baris)`;
+            showToast(`Berhasil memuat ${data.rows.length} voucher dari ${file.name}!`, "text-bg-success");
+            renderVouchers();
+          } else {
+            showToast(data.error || "Gagal memproses file Excel", "text-bg-danger");
+            el.excelDropzoneText.innerText = "Pilih atau Drag File Excel";
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          showToast("Gagal mengunggah file: " + err.message, "text-bg-danger");
+          el.excelDropzoneText.innerText = "Pilih atau Drag File Excel";
+        });
+    }
+
+    // ==========================================
+    // PRESET LAYOUTS & THEMES ENGINE
+    // ==========================================
+
+    const presetConfigs = {
+      a4_grid: {
+        name: 'A4 Grid (Multi-Kolom)',
+        voucherWidth: 58,
+        voucherMargin: 2,
+        voucherPadding: 6,
+        pageMargin: 5
+      },
+      a4_2col: {
+        name: 'A4 2-Kolom Kompak',
+        voucherWidth: 95,
+        voucherMargin: 3,
+        voucherPadding: 8,
+        pageMargin: 6
+      },
+      thermal_80: {
+        name: 'Thermal 80mm',
+        voucherWidth: 74,
+        voucherMargin: 3,
+        voucherPadding: 6,
+        pageMargin: 3
+      },
+      thermal_58: {
+        name: 'Thermal 58mm',
+        voucherWidth: 52,
+        voucherMargin: 2,
+        voucherPadding: 4,
+        pageMargin: 2
+      }
+    };
+
+    const themeColors = {
+      bw: {
+        borderColor: '#000000',
+        textColor: '#000000',
+        bgColor: '#ffffff',
+        borderStyle: 'solid',
+        borderWidth: '1.5px'
+      },
+      ruijie: {
+        borderColor: '#1d4ed8',
+        textColor: '#0f172a',
+        bgColor: '#f0f7ff',
+        borderStyle: 'solid',
+        borderWidth: '1.5px'
+      },
+      cafe: {
+        borderColor: '#78350f',
+        textColor: '#451a03',
+        bgColor: '#fefce8',
+        borderStyle: 'dashed',
+        borderWidth: '1.5px'
+      },
+      emerald: {
+        borderColor: '#047857',
+        textColor: '#064e3b',
+        bgColor: '#f0fdf4',
+        borderStyle: 'solid',
+        borderWidth: '1.5px'
+      },
+      vip: {
+        borderColor: '#6d28d9',
+        textColor: '#3b0764',
+        bgColor: '#faf5ff',
+        borderStyle: 'double',
+        borderWidth: '2px'
+      }
+    };
+
+    function applyLayoutPreset(presetKey) {
+      if (!presetConfigs[presetKey]) return;
+      state.currentPreset = presetKey;
+      const p = presetConfigs[presetKey];
+
+      state.config.voucherWidth = p.voucherWidth;
+      state.config.voucherMargin = p.voucherMargin;
+      state.config.voucherPadding = p.voucherPadding;
+      state.config.pageMargin = p.pageMargin;
+
+      // Update UI Controls
+      el.rangeVoucherWidth.value = p.voucherWidth;
+      el.valVoucherWidth.innerText = `${p.voucherWidth} mm`;
+      el.rangeVoucherMargin.value = p.voucherMargin;
+      el.valVoucherMargin.innerText = `${p.voucherMargin} mm`;
+      el.rangeVoucherPadding.value = p.voucherPadding;
+      el.valVoucherPadding.innerText = `${p.voucherPadding} px`;
+      el.rangePageMargin.value = p.pageMargin;
+      el.valPageMargin.innerText = `${p.pageMargin} mm`;
+
+      el.lblCurrentPreset.innerHTML = `<i class="bi bi-eye-fill me-1"></i> Live Simulator ${p.name}`;
+
+      document.querySelectorAll('[data-preset-layout]').forEach(chip => {
+        chip.classList.toggle('active', chip.dataset.presetLayout === presetKey);
+      });
+
+      renderVouchers();
+    }
+
+    function applyThemePreset(themeKey) {
+      if (!themeColors[themeKey]) return;
+      state.activeTheme = themeKey;
+      const t = themeColors[themeKey];
+
+      state.config.borderColor = t.borderColor;
+      state.config.textColor = t.textColor;
+      state.config.bgColor = t.bgColor;
+      state.config.borderStyle = t.borderStyle;
+      state.config.borderWidth = t.borderWidth;
+
+      el.colorBorder.value = t.borderColor;
+      el.colorText.value = t.textColor;
+      el.colorBg.value = t.bgColor;
+      el.selectBorderStyle.value = t.borderStyle;
+      el.selectBorderWidth.value = t.borderWidth;
+
+      document.querySelectorAll('[data-theme]').forEach(chip => {
+        chip.classList.toggle('active', chip.dataset.theme === themeKey);
+      });
+
+      renderVouchers();
+    }
+
+    // ==========================================
+    // EVENT LISTENERS & BINDINGS
+    // ==========================================
+
+    function initEventListeners() {
+      // Tab navigation
+      initTabs();
+
+      // Load Sample Data
+      el.btnLoadSample.addEventListener('click', () => {
+        state.rawRows = sampleVouchers;
+        el.excelDropzoneText.innerText = "Data Contoh Ruijie (10 Voucher)";
+        showToast("Memuat 10 voucher contoh!", "text-bg-info");
+        renderVouchers();
+      });
+
+      // Excel File Input
+      el.excelFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) handleExcelFile(file);
+      });
+
+      // Excel Dropzone Drag & Drop
+      ['dragenter', 'dragover'].forEach(eventName => {
+        el.excelDropzone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          el.excelDropzone.classList.add('dragover');
+        }, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        el.excelDropzone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          el.excelDropzone.classList.remove('dragover');
+        }, false);
+      });
+
+      el.excelDropzone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const file = dt.files[0];
+        if (file) handleExcelFile(file);
+      });
+
+      // Logo Upload & Remove
+      el.logoFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          state.logoDataUrl = evt.target.result;
+          el.logoText.innerText = file.name;
+          el.btnRemoveLogo.classList.remove('d-none');
+          showToast("Logo berhasil dimuat!", "text-bg-success");
+          renderVouchers();
+        };
+        reader.readAsDataURL(file);
+      });
+
+      el.btnRemoveLogo.addEventListener('click', () => {
+        state.logoDataUrl = null;
+        el.logoFileInput.value = '';
+        el.logoText.innerHTML = '<i class="bi bi-image me-1"></i> Upload Logo';
+        el.btnRemoveLogo.classList.add('d-none');
+        renderVouchers();
+      });
+
+      // Text Inputs
+      const updateWifi = (e) => { state.config.wifiName = e.target.value; renderVouchers(); };
+      el.inputWifiName.addEventListener('input', updateWifi);
+      el.inputWifiName.addEventListener('change', updateWifi);
+
+      const updateFooter = (e) => { state.config.footerNotes = e.target.value; renderVouchers(); };
+      el.inputFooterNotes.addEventListener('input', updateFooter);
+      el.inputFooterNotes.addEventListener('change', updateFooter);
+
+      el.selectStatusFilter.addEventListener('change', (e) => {
+        state.config.statusFilter = e.target.value;
+        renderVouchers();
+      });
+
+      const updateMax = (e) => {
+        state.config.maxVouchers = e.target.value ? parseInt(e.target.value) : null;
+        renderVouchers();
+      };
+      el.inputMaxVouchers.addEventListener('input', updateMax);
+      el.inputMaxVouchers.addEventListener('change', updateMax);
+
+      // Layout Sliders (Attach both input and change events for real-time reactivity)
+      const bindRange = (inputEl, valEl, unit, stateKey) => {
+        const handler = (e) => {
+          const val = parseFloat(e.target.value);
+          state.config[stateKey] = val;
+          if (valEl) {
+            valEl.innerText = (stateKey === 'voucherMinHeight' && val === 0) ? 'Otomatis' : `${val} ${unit}`;
+          }
+          updateCssVariables();
+        };
+        inputEl.addEventListener('input', handler);
+        inputEl.addEventListener('change', handler);
+      };
+
+      bindRange(el.rangeVoucherWidth, el.valVoucherWidth, 'mm', 'voucherWidth');
+      bindRange(el.rangeVoucherMinHeight, el.valVoucherMinHeight, 'mm', 'voucherMinHeight');
+      bindRange(el.rangeVoucherMargin, el.valVoucherMargin, 'mm', 'voucherMargin');
+      bindRange(el.rangeVoucherPadding, el.valVoucherPadding, 'px', 'voucherPadding');
+      bindRange(el.rangePageMargin, el.valPageMargin, 'mm', 'pageMargin');
+      bindRange(el.rangeLogoHeight, el.valLogoHeight, 'px', 'logoHeight');
+
+      // Typography Controls
+      el.selectFontFamily.addEventListener('change', (e) => {
+        state.config.fontFamily = e.target.value;
+        updateCssVariables();
+      });
+
+      bindRange(el.rangeCodeSize, el.valCodeSize, 'px', 'codeSize');
+      bindRange(el.rangeTitleSize, el.valTitleSize, 'px', 'titleSize');
+      bindRange(el.rangeTableSize, el.valTableSize, 'px', 'tableSize');
+      bindRange(el.rangeNotesSize, el.valNotesSize, 'px', 'notesSize');
+
+      // Theme & Border Controls
+      el.selectBorderStyle.addEventListener('change', (e) => {
+        state.config.borderStyle = e.target.value;
+        updateCssVariables();
+      });
+
+      el.selectBorderWidth.addEventListener('change', (e) => {
+        state.config.borderWidth = e.target.value;
+        updateCssVariables();
+      });
+
+      bindRange(el.rangeBorderRadius, el.valBorderRadius, 'px', 'borderRadius');
+
+      const bindColor = (inputEl, stateKey) => {
+        const handler = (e) => {
+          state.config[stateKey] = e.target.value;
+          updateCssVariables();
+        };
+        inputEl.addEventListener('input', handler);
+        inputEl.addEventListener('change', handler);
+      };
+
+      bindColor(el.colorBorder, 'borderColor');
+      bindColor(el.colorText, 'textColor');
+      bindColor(el.colorBg, 'bgColor');
+
+      // Checkbox Fields
+      const fieldCheckboxes = [
+        { el: el.chkNumber, key: 'showNumber' },
+        { el: el.chkQrCode, key: 'showQrCode' },
+        { el: el.chkUserGroup, key: 'showUserGroup' },
+        { el: el.chkPrice, key: 'showPrice' },
+        { el: el.chkPeriod, key: 'showPeriod' },
+        { el: el.chkName, key: 'showName' },
+        { el: el.chkAlias, key: 'showAlias' },
+        { el: el.chkDevice, key: 'showDevice' },
+        { el: el.chkMacBinding, key: 'showMacBinding' },
+        { el: el.chkSpeed, key: 'showSpeed' }
+      ];
+
+      fieldCheckboxes.forEach(item => {
+        if (item.el) {
+          item.el.addEventListener('change', (e) => {
+            state.config[item.key] = e.target.checked;
+            renderVouchers();
+          });
+        }
+      });
+
+      el.selectPriceMultiplier.addEventListener('change', (e) => {
+        state.config.priceMultiplier = parseFloat(e.target.value);
+        renderVouchers();
+      });
+
+      // Preset Layout Chips
+      document.querySelectorAll('[data-preset-layout]').forEach(chip => {
+        chip.addEventListener('click', () => {
+          applyLayoutPreset(chip.dataset.presetLayout);
+        });
+      });
+
+      // Preset Theme Chips
+      document.querySelectorAll('[data-theme]').forEach(chip => {
+        chip.addEventListener('click', () => {
+          applyThemePreset(chip.dataset.theme);
+        });
+      });
+
+      // Print Buttons
+      const triggerPrint = () => {
+        if (state.filteredRows.length === 0) {
+          showToast("Tidak ada voucher untuk dicetak!", "text-bg-warning");
+          return;
+        }
+        window.print();
+      };
+      el.btnPrintTop.addEventListener('click', triggerPrint);
+      el.btnPrintSidebar.addEventListener('click', triggerPrint);
+
+      // Reset Button
+      el.btnResetSettings.addEventListener('click', () => {
+        applyLayoutPreset('a4_grid');
+        applyThemePreset('bw');
+        showToast("Pengaturan dikembalikan ke standar!", "text-bg-info");
+      });
+
+      // Zoom Controls
+      el.btnZoomIn.addEventListener('click', () => {
+        if (state.zoom < 1.6) {
+          state.zoom += 0.15;
+          applyZoom();
+        }
+      });
+
+      el.btnZoomOut.addEventListener('click', () => {
+        if (state.zoom > 0.4) {
+          state.zoom -= 0.15;
+          applyZoom();
+        }
+      });
+
+      el.btnZoomFit.addEventListener('click', () => {
+        state.zoom = 1.0;
+        applyZoom();
+      });
+
+      // Copy PIN Codes
+      el.btnCopyCodes.addEventListener('click', () => {
+        if (state.filteredRows.length === 0) {
+          showToast("Belum ada data voucher!", "text-bg-warning");
+          return;
+        }
+        const codes = state.filteredRows.map(r => r[0]).join('\n');
+        navigator.clipboard.writeText(codes).then(() => {
+          showToast(`Berhasil menyalin ${state.filteredRows.length} PIN voucher!`, "text-bg-success");
+        }).catch(() => {
+          showToast("Gagal menyalin ke clipboard", "text-bg-danger");
+        });
+      });
+
+      // Export Standalone HTML
+      el.btnExportHtml.addEventListener('click', () => {
+        if (state.filteredRows.length === 0) {
+          showToast("Belum ada data voucher untuk diunduh!", "text-bg-warning");
+          return;
+        }
+        const content = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Cetak Voucher Ruijie</title>
+  <style>
+    body { margin: 0; padding: var(--page-margin); font-family: ${state.config.fontFamily}; }
+    ${document.querySelector('style').innerHTML}
+  </style>
+</head>
+<body onload="window.print()">
+  <div class="paper-sheet ${state.currentPreset.startsWith('thermal') ? 'thermal-mode' : ''}">
+    ${el.printablePaper.innerHTML}
+  </div>
+</body>
+</html>`;
+        const blob = new Blob([content], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Voucher_Ruijie_${new Date().toISOString().slice(0, 10)}.html`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("File HTML cetak berhasil diunduh!", "text-bg-success");
+      });
+    }
+
+    function applyZoom() {
+      el.printablePaper.style.transform = `scale(${state.zoom})`;
+      el.lblZoomLevel.innerText = `${Math.round(state.zoom * 100)}%`;
+    }
+
+    // Initialize App with Sample Data on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      initEventListeners();
+      // Start with sample vouchers for an immediate live preview experience
+      state.rawRows = sampleVouchers;
+      renderVouchers();
+    });
+  </script>
+</body>
+
 </html>
