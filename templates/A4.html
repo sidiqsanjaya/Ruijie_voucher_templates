@@ -81,7 +81,8 @@
 
     {% set num = namespace(value=0) %}
     {% for section in data %}
-        {% if section[2] == 'In use' or section[2] == 'Expired' %}
+        {% set status_str = (section[2] | string | lower | trim) %}
+        {% if status_str in ['in use', 'in_use', 'sedang digunakan', 'used', 'expired', 'habis', 'kedaluwarsa', 'kadaluarsa', 'kadaluwarsa'] %}
 
         {% else %}
             {% set num.value = num.value + 1 %}
@@ -191,7 +192,12 @@
                     {% if 'device' in configs %}
                     <tr>
                         <th>Device</th>
-                        <td>{{ section[14] }}</td>
+                        {% set dev_str = (section[14] | string | trim) %}
+                        {% if dev_str.isdigit() and (dev_str | int) > 0 %}
+                            <td>{{ dev_str }} Perangkat</td>
+                        {% else %}
+                            <td>Unlimited</td>
+                        {% endif %}
                     </tr>
                     {% endif %}
                     {% if 'uploadDownload' in configs %}

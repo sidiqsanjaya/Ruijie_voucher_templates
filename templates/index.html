@@ -1,11 +1,9 @@
 <!doctype html>
 <html lang="id">
-
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description"
-    content="Ruijie Voucher Generator & Live Studio - Generator template voucher Ruijie Cloud interaktif dengan live preview dan kustomisasi ukuran real-time.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Ruijie Voucher Generator & Live Studio - Generator template voucher Ruijie Cloud interaktif dengan live preview dan kustomisasi ukuran real-time.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Ruijie Voucher Studio Pro">
   <title>Ruijie Voucher Studio Pro & Live Customizer</title>
@@ -14,9 +12,7 @@
   <!-- Google Fonts & Bootstrap 5 & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
@@ -37,7 +33,7 @@
       --accent: #3b82f6;
       --accent-hover: #2563eb;
       --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-
+      
       /* Voucher Dynamic Variables for Preview & Print */
       --v-font-family: 'Plus Jakarta Sans', sans-serif;
       --v-width: 58mm;
@@ -78,10 +74,10 @@
 
     /* Top Navigation Bar */
     .top-navbar {
-      background: rgba(30, 41, 59, 0.95);
+      background: rgba(30, 41, 59, 0.98);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-color);
-      padding: 12px 24px;
+      padding: 10px 16px;
       position: sticky;
       top: 0;
       z-index: 1000;
@@ -90,8 +86,8 @@
     .brand-logo {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 1.25rem;
+      gap: 10px;
+      font-size: 1.15rem;
       font-weight: 800;
       color: #fff;
       text-decoration: none;
@@ -99,11 +95,52 @@
 
     .brand-badge {
       background: var(--accent-gradient);
-      padding: 2px 8px;
+      padding: 2px 7px;
       border-radius: 20px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 700;
       letter-spacing: 0.5px;
+      color: #fff;
+    }
+
+    /* Mobile View Toggle Bar */
+    .mobile-view-toggle {
+      display: flex;
+      background: #0f172a;
+      border-bottom: 1px solid var(--border-color);
+      padding: 6px 12px;
+      gap: 6px;
+      position: sticky;
+      top: 57px;
+      z-index: 990;
+    }
+
+    @media (min-width: 992px) {
+      .mobile-view-toggle {
+        display: none;
+      }
+    }
+
+    .mobile-toggle-btn {
+      flex: 1;
+      border: 1px solid var(--border-color);
+      background: #1e293b;
+      color: var(--text-muted);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mobile-toggle-btn.active {
+      background: #3b82f6;
+      border-color: #3b82f6;
       color: #fff;
     }
 
@@ -112,12 +149,14 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      height: calc(100vh - 65px);
+      position: relative;
     }
 
     @media (min-width: 992px) {
       .workspace-wrapper {
         flex-direction: row;
+        height: calc(100vh - 125px);
+        min-height: 600px;
       }
     }
 
@@ -129,7 +168,6 @@
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      height: 100%;
     }
 
     @media (min-width: 992px) {
@@ -137,11 +175,18 @@
         width: 440px;
         min-width: 400px;
         max-width: 480px;
+        height: 100%;
+      }
+    }
+
+    @media (max-width: 991.98px) {
+      .controls-sidebar.hide-on-mobile {
+        display: none !important;
       }
     }
 
     .sidebar-header {
-      padding: 16px 20px;
+      padding: 14px 18px;
       border-bottom: 1px solid var(--border-color);
       display: flex;
       justify-content: space-between;
@@ -154,9 +199,19 @@
       display: flex;
       border-bottom: 1px solid var(--border-color);
       background: rgba(15, 23, 42, 0.3);
-      padding: 6px 12px 0 12px;
+      padding: 6px 10px 0 10px;
       gap: 4px;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .nav-tabs-modern::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    .nav-tabs-modern::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 3px;
     }
 
     .nav-tabs-modern .tab-btn {
@@ -185,7 +240,7 @@
     }
 
     .tab-content-area {
-      padding: 20px;
+      padding: 16px;
       flex: 1;
       overflow-y: auto;
     }
@@ -200,7 +255,7 @@
 
     /* Control Elements & Inputs */
     .control-group {
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .control-label {
@@ -228,7 +283,7 @@
       border: 1px solid var(--border-color);
       color: #f8fafc;
       border-radius: 8px;
-      padding: 8px 12px;
+      padding: 9px 12px;
       font-size: 0.875rem;
       transition: all 0.2s;
       width: 100%;
@@ -247,7 +302,7 @@
     .dropzone-box {
       border: 2px dashed #475569;
       border-radius: 12px;
-      padding: 20px 16px;
+      padding: 18px 14px;
       text-align: center;
       background: rgba(15, 23, 42, 0.4);
       cursor: pointer;
@@ -279,11 +334,17 @@
       gap: 8px;
     }
 
+    @media (max-width: 480px) {
+      .checkbox-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .custom-check-item {
       background: #0f172a;
       border: 1px solid var(--border-color);
       border-radius: 8px;
-      padding: 8px 10px;
+      padding: 9px 10px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -302,9 +363,10 @@
 
     .custom-check-item input[type="checkbox"] {
       accent-color: #3b82f6;
-      width: 16px;
-      height: 16px;
+      width: 17px;
+      height: 17px;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
     /* Presets Chips */
@@ -343,6 +405,7 @@
       accent-color: #38bdf8;
       cursor: pointer;
       width: 100%;
+      height: 6px;
     }
 
     /* Right Live Preview Canvas Area */
@@ -357,16 +420,25 @@
       position: relative;
     }
 
+    @media (max-width: 991.98px) {
+      .preview-canvas-container.hide-on-mobile {
+        display: none !important;
+      }
+      .preview-canvas-container {
+        min-height: 500px;
+      }
+    }
+
     /* Preview Canvas Toolbar */
     .preview-toolbar {
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.95);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border-color);
-      padding: 10px 20px;
+      padding: 10px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
       z-index: 10;
     }
@@ -374,10 +446,11 @@
     .preview-scroll-viewport {
       flex: 1;
       overflow: auto;
-      padding: 30px;
+      padding: 20px 10px;
       display: flex;
       justify-content: center;
       align-items: flex-start;
+      -webkit-overflow-scrolling: touch;
     }
 
     /* Paper Simulator (A4 & Thermal Sheet) */
@@ -390,6 +463,7 @@
       margin-bottom: 50px;
       min-height: 297mm;
       width: 210mm;
+      max-width: 100%;
       padding: var(--page-margin);
       display: flex;
       flex-wrap: wrap;
@@ -549,8 +623,10 @@
       }
 
       .top-navbar,
+      .mobile-view-toggle,
       .controls-sidebar,
       .preview-toolbar,
+      .footer,
       .no-print {
         display: none !important;
       }
@@ -561,6 +637,7 @@
       }
 
       .preview-canvas-container {
+        display: block !important;
         background: transparent !important;
         background-image: none !important;
         overflow: visible !important;
@@ -602,31 +679,40 @@
   <header class="top-navbar no-print">
     <div class="container-fluid d-flex justify-content-between align-items-center">
       <a href="/" class="brand-logo">
-        <img src="/static/hs_cover.png" alt="Logo" width="30" height="30" class="rounded">
-        <span>Ruijie Voucher Studio <span class="brand-badge">PRO LIVE</span></span>
+        <img src="/static/hs_cover.png" alt="Logo" width="28" height="28" class="rounded">
+        <span class="d-none d-sm-inline">Ruijie Voucher Studio <span class="brand-badge">PRO LIVE</span></span>
+        <span class="d-inline d-sm-none">Ruijie Studio <span class="brand-badge">PRO</span></span>
       </a>
 
-      <div class="d-flex align-items-center gap-2">
-        <button type="button" class="btn btn-outline-info btn-sm fw-semibold" id="btnLoadSample"
-          title="Coba dengan data contoh Ruijie">
-          <i class="bi bi-lightning-charge-fill me-1"></i> Muat Data Contoh
+      <div class="d-flex align-items-center gap-1 gap-sm-2">
+        <button type="button" class="btn btn-outline-info btn-sm fw-semibold" id="btnLoadSample" title="Coba dengan data contoh Ruijie">
+          <i class="bi bi-lightning-charge-fill"></i> <span class="d-none d-md-inline">Contoh</span>
         </button>
-        <button type="button" class="btn btn-outline-light btn-sm" id="btnResetSettings"
-          title="Kembalikan semua slider ke default">
-          <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+        <button type="button" class="btn btn-outline-light btn-sm" id="btnResetSettings" title="Kembalikan semua slider ke default">
+          <i class="bi bi-arrow-counterclockwise"></i> <span class="d-none d-md-inline">Reset</span>
         </button>
-        <button type="button" class="btn btn-primary btn-sm fw-bold px-3 shadow-sm" id="btnPrintTop">
-          <i class="bi bi-printer-fill me-1"></i> Cetak Voucher (Print)
+        <button type="button" class="btn btn-primary btn-sm fw-bold px-2 px-sm-3 shadow-sm" id="btnPrintTop">
+          <i class="bi bi-printer-fill me-1"></i> Cetak
         </button>
       </div>
     </div>
   </header>
 
+  <!-- Mobile Segmented View Switcher (Visible only on screens < 992px) -->
+  <div class="mobile-view-toggle no-print">
+    <button type="button" class="mobile-toggle-btn active" id="btnMobileShowControls">
+      <i class="bi bi-sliders"></i> 1. Pengaturan & Desain
+    </button>
+    <button type="button" class="mobile-toggle-btn" id="btnMobileShowPreview">
+      <i class="bi bi-eye-fill"></i> 2. Live Preview
+    </button>
+  </div>
+
   <!-- Workspace Wrapper -->
   <div class="workspace-wrapper">
 
     <!-- Left Controls Panel -->
-    <aside class="controls-sidebar no-print">
+    <aside class="controls-sidebar no-print" id="controlsSidebar">
       <div class="sidebar-header">
         <div class="fw-bold text-white d-flex align-items-center gap-2">
           <i class="bi bi-sliders text-primary"></i> Pengaturan & Desain Live
@@ -658,7 +744,7 @@
 
         <!-- ================= TAB 1: DATA & INFO ================= -->
         <div class="tab-panel-item active" id="tab-data">
-
+          
           <!-- Excel Dropzone -->
           <div class="control-group">
             <label class="control-label">File Excel Ruijie (.xlsx / .xls)</label>
@@ -687,14 +773,12 @@
           <!-- Header Inputs -->
           <div class="control-group">
             <label class="control-label">Nama WiFi / Header</label>
-            <input type="text" class="form-control-dark" id="inputWifiName"
-              placeholder="Contoh: @WIFI-GRATIS / CAFE-NET" value="HOTSPOT RUIJIE">
+            <input type="text" class="form-control-dark" id="inputWifiName" placeholder="Contoh: @WIFI-GRATIS / CAFE-NET" value="HOTSPOT RUIJIE">
           </div>
 
           <div class="control-group">
             <label class="control-label">Catatan Kaki / Pesan Tambahan</label>
-            <input type="text" class="form-control-dark" id="inputFooterNotes"
-              placeholder="Contoh: Login di 10.10.10.1 / Terimakasih">
+            <input type="text" class="form-control-dark" id="inputFooterNotes" placeholder="Contoh: Login di 10.10.10.1 / Terimakasih" value="">
           </div>
 
           <!-- Filter Status & Range -->
@@ -718,19 +802,15 @@
 
         <!-- ================= TAB 2: UKURAN & LAYOUT ================= -->
         <div class="tab-panel-item" id="tab-layout">
-
+          
           <!-- Preset Paper Sizes -->
           <div class="control-group">
             <label class="control-label">Preset Kertas / Mode Cetak</label>
             <div class="preset-chip-group">
-              <span class="preset-chip active" data-preset-layout="a4_grid"><i class="bi bi-grid-3x3 me-1"></i>A4 Grid
-                (Multi)</span>
-              <span class="preset-chip" data-preset-layout="a4_2col"><i class="bi bi-layout-split me-1"></i>A4
-                2-Kolom</span>
-              <span class="preset-chip" data-preset-layout="thermal_80"><i class="bi bi-receipt me-1"></i>Thermal
-                80mm</span>
-              <span class="preset-chip" data-preset-layout="thermal_58"><i class="bi bi-receipt me-1"></i>Thermal
-                58mm</span>
+              <span class="preset-chip active" data-preset-layout="a4_grid"><i class="bi bi-grid-3x3 me-1"></i>A4 Grid (Multi)</span>
+              <span class="preset-chip" data-preset-layout="a4_2col"><i class="bi bi-layout-split me-1"></i>A4 2-Kolom</span>
+              <span class="preset-chip" data-preset-layout="thermal_80"><i class="bi bi-receipt me-1"></i>Thermal 80mm</span>
+              <span class="preset-chip" data-preset-layout="thermal_58"><i class="bi bi-receipt me-1"></i>Thermal 58mm</span>
             </div>
           </div>
 
@@ -749,8 +829,7 @@
               <span>Tinggi Minimum</span>
               <span class="value-badge" id="valVoucherMinHeight">Otomatis</span>
             </div>
-            <input type="range" class="form-range-custom" id="rangeVoucherMinHeight" min="0" max="120" value="0"
-              step="2">
+            <input type="range" class="form-range-custom" id="rangeVoucherMinHeight" min="0" max="120" value="0" step="2">
           </div>
 
           <!-- Slider: Spacing / Margin Antar Voucher -->
@@ -793,7 +872,7 @@
 
         <!-- ================= TAB 3: TEMA & GAYA ================= -->
         <div class="tab-panel-item" id="tab-theme">
-
+          
           <!-- Preset Themes -->
           <div class="control-group">
             <label class="control-label">Preset Tema Warna</label>
@@ -858,7 +937,7 @@
 
         <!-- ================= TAB 4: TIPOGRAFI & UKURAN TEKS ================= -->
         <div class="tab-panel-item" id="tab-typography">
-
+          
           <div class="control-group">
             <label class="control-label">Jenis Font Utama</label>
             <select class="form-select-dark" id="selectFontFamily">
@@ -910,9 +989,9 @@
 
         <!-- ================= TAB 5: KOLOM & FIELD DATA ================= -->
         <div class="tab-panel-item" id="tab-fields">
-
+          
           <label class="control-label mb-2">Pilih Informasi Yang Ditampilkan Pada Voucher</label>
-
+          
           <div class="checkbox-grid mb-3">
             <label class="custom-check-item">
               <input type="checkbox" id="chkNumber" checked>
@@ -969,48 +1048,53 @@
 
       </div>
 
-      <!-- Sidebar Footer Actions -->
-      <div class="p-3 border-top border-secondary bg-dark d-flex gap-2">
-        <button type="button" class="btn btn-primary w-100 fw-bold py-2 shadow" id="btnPrintSidebar">
+      <!-- Sidebar Footer Actions & Trakteer / Author Info -->
+      <div class="p-3 border-top border-secondary bg-dark no-print mt-auto">
+        <button type="button" class="btn btn-primary w-100 fw-bold py-2 shadow mb-3" id="btnPrintSidebar">
           <i class="bi bi-printer-fill me-1"></i> CETAK VOUCHER (PRINT)
         </button>
+
+        <!-- Trakteer & Author Info -->
+        <div class="text-center pt-2 border-top border-secondary">
+          <div class="text-light opacity-75 small mb-1" style="font-size: 0.8rem; line-height: 1.4;">
+            Dibuat oleh <a href="https://www.facebook.com/sidiq.sanjaya.INAdik/" target="_blank" class="text-info text-decoration-none fw-semibold">Siddiq Sanjaya Bakti</a> &bull; <span class="text-info-emphasis">AI Enhanced</span><br>
+            dan jangan lupa <a href="https://trakteer.id/INAdik/tip" target="_blank" class="d-inline-block align-middle my-1"><img id="wse-buttons-preview" src="https://cdn.trakteer.id/images/embed/trbtn-red-1.png?date=18-11-2023" height="34" style="border:0px;height:34px;" alt="Trakteer Saya"></a> kalo bisa
+          </div>
+          <div class="text-light opacity-50" style="font-size: 0.725rem;">
+            Source Code <a href="https://github.com/sidiqsanjaya/Ruijie_voucher_templates" target="_blank" class="text-info text-decoration-none">Github</a> tinggal fork atau download
+          </div>
+        </div>
       </div>
 
     </aside>
 
     <!-- Right Live Preview Canvas -->
-    <main class="preview-canvas-container">
-
+    <main class="preview-canvas-container" id="previewCanvasContainer">
+      
       <!-- Preview Toolbar -->
       <div class="preview-toolbar no-print">
         <div class="d-flex align-items-center gap-2">
-          <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1"
-            id="lblCurrentPreset">
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1" id="lblCurrentPreset">
             <i class="bi bi-eye-fill me-1"></i> Live Simulator A4 Grid
           </span>
-          <span class="text-muted small" id="lblStatsInfo">Menampilkan 0 voucher aktif</span>
+          <span class="text-muted small d-none d-sm-inline" id="lblStatsInfo">Menampilkan 0 voucher aktif</span>
         </div>
 
         <!-- Zoom & Actions -->
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-1 gap-sm-2">
           <div class="btn-group btn-group-sm">
-            <button type="button" class="btn btn-dark border-secondary text-light" id="btnZoomOut" title="Zoom Out"><i
-                class="bi bi-zoom-out"></i></button>
+            <button type="button" class="btn btn-dark border-secondary text-light" id="btnZoomOut" title="Zoom Out"><i class="bi bi-zoom-out"></i></button>
             <span class="btn btn-dark border-secondary text-info disabled px-2" id="lblZoomLevel">100%</span>
-            <button type="button" class="btn btn-dark border-secondary text-light" id="btnZoomIn" title="Zoom In"><i
-                class="bi bi-zoom-in"></i></button>
-            <button type="button" class="btn btn-dark border-secondary text-light" id="btnZoomFit"
-              title="Fit Screen">Fit</button>
+            <button type="button" class="btn btn-dark border-secondary text-light" id="btnZoomIn" title="Zoom In"><i class="bi bi-zoom-in"></i></button>
+            <button type="button" class="btn btn-dark border-secondary text-light" id="btnZoomFit" title="Fit Screen">Fit</button>
           </div>
 
-          <button type="button" class="btn btn-outline-light btn-sm" id="btnExportHtml"
-            title="Download template HTML mandiri">
-            <i class="bi bi-download me-1"></i> Simpan HTML
+          <button type="button" class="btn btn-outline-light btn-sm" id="btnExportHtml" title="Download template HTML mandiri">
+            <i class="bi bi-download"></i> <span class="d-none d-md-inline">HTML</span>
           </button>
-
-          <button type="button" class="btn btn-outline-info btn-sm" id="btnCopyCodes"
-            title="Salin daftar PIN voucher ke clipboard">
-            <i class="bi bi-clipboard me-1"></i> Copy PIN
+          
+          <button type="button" class="btn btn-outline-info btn-sm" id="btnCopyCodes" title="Salin daftar PIN voucher ke clipboard">
+            <i class="bi bi-clipboard"></i> <span class="d-none d-md-inline">PIN</span>
           </button>
         </div>
       </div>
@@ -1029,14 +1113,12 @@
 
   <!-- Toast Notification Container -->
   <div class="position-fixed bottom-0 end-0 p-3 no-print" style="z-index: 9999;">
-    <div id="actionToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive"
-      aria-atomic="true">
+    <div id="actionToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="d-flex">
         <div class="toast-body" id="toastMessage">
           Pemberitahuan
         </div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-          aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
     </div>
   </div>
@@ -1125,6 +1207,11 @@
       lblStatsInfo: document.getElementById('lblStatsInfo'),
       lblZoomLevel: document.getElementById('lblZoomLevel'),
       lblCurrentPreset: document.getElementById('lblCurrentPreset'),
+      previewViewport: document.getElementById('previewViewport'),
+      controlsSidebar: document.getElementById('controlsSidebar'),
+      previewCanvasContainer: document.getElementById('previewCanvasContainer'),
+      btnMobileShowControls: document.getElementById('btnMobileShowControls'),
+      btnMobileShowPreview: document.getElementById('btnMobileShowPreview'),
       // Sliders & Values
       rangeVoucherWidth: document.getElementById('rangeVoucherWidth'),
       valVoucherWidth: document.getElementById('valVoucherWidth'),
@@ -1201,11 +1288,9 @@
           const targetId = btn.getAttribute('data-tab-target');
           if (!targetId) return;
 
-          // Toggle tab button active state
           tabBtns.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
 
-          // Toggle tab panel active state
           document.querySelectorAll('.tab-panel-item').forEach(panel => {
             panel.classList.remove('active');
           });
@@ -1215,6 +1300,24 @@
           }
         });
       });
+
+      // Mobile segment toggle
+      if (el.btnMobileShowControls && el.btnMobileShowPreview) {
+        el.btnMobileShowControls.addEventListener('click', () => {
+          el.btnMobileShowControls.classList.add('active');
+          el.btnMobileShowPreview.classList.remove('active');
+          el.controlsSidebar.classList.remove('hide-on-mobile');
+          el.previewCanvasContainer.classList.add('hide-on-mobile');
+        });
+
+        el.btnMobileShowPreview.addEventListener('click', () => {
+          el.btnMobileShowPreview.classList.add('active');
+          el.btnMobileShowControls.classList.remove('active');
+          el.controlsSidebar.classList.add('hide-on-mobile');
+          el.previewCanvasContainer.classList.remove('hide-on-mobile');
+          autoFitMobile();
+        });
+      }
     }
 
     // Apply Live CSS Variables
@@ -1229,7 +1332,7 @@
       root.style.setProperty('--v-padding', `${c.voucherPadding}px`);
       root.style.setProperty('--page-margin', `${c.pageMargin}mm`);
       root.style.setProperty('--v-logo-max-h', `${c.logoHeight}px`);
-
+      
       root.style.setProperty('--v-code-size', `${c.codeSize}px`);
       root.style.setProperty('--v-title-size', `${c.titleSize}px`);
       root.style.setProperty('--v-table-size', `${c.tableSize}px`);
@@ -1268,17 +1371,20 @@
       if (state.config.statusFilter === 'active_only') {
         list = list.filter(r => {
           const status = (r[2] || '').toString().trim().toLowerCase();
-          return status !== 'in use' && status !== 'in_use' && status !== 'expired' && status !== 'habis';
+          // Exclude used and expired vouchers in both English and Indonesian translations
+          const isUsed = status === 'in use' || status === 'in_use' || status === 'sedang digunakan' || status === 'used';
+          const isExpired = status === 'expired' || status === 'habis' || status === 'kedaluwarsa' || status === 'kadaluarsa' || status === 'kadaluwarsa';
+          return !isUsed && !isExpired;
         });
       } else if (state.config.statusFilter === 'in_use') {
         list = list.filter(r => {
           const status = (r[2] || '').toString().trim().toLowerCase();
-          return status === 'in use' || status === 'in_use';
+          return status === 'in use' || status === 'in_use' || status === 'sedang digunakan' || status === 'used';
         });
       } else if (state.config.statusFilter === 'expired') {
         list = list.filter(r => {
           const status = (r[2] || '').toString().trim().toLowerCase();
-          return status === 'expired' || status === 'habis';
+          return status === 'expired' || status === 'habis' || status === 'kedaluwarsa' || status === 'kadaluarsa' || status === 'kadaluwarsa';
         });
       }
 
@@ -1295,6 +1401,20 @@
       if (!val || isNaN(val)) return 'Rp -';
       const num = parseFloat(val) * state.config.priceMultiplier;
       return 'Rp ' + Math.round(num).toLocaleString('id-ID');
+    }
+
+    // Format Device (Jika angka -> X Perangkat, jika selain angka / 0 / kosong -> Unlimited)
+    function formatDevice(val) {
+      if (val === null || val === undefined) return 'Unlimited';
+      const str = String(val).trim();
+      if (!str || str === '-' || str === '0') return 'Unlimited';
+      if (/^\d+$/.test(str) && parseInt(str, 10) > 0) {
+        return `${str} Perangkat`;
+      }
+      if (['unlimited', 'tak terbatas', 'tidak terbatas', 'bebas'].includes(str.toLowerCase())) {
+        return 'Unlimited';
+      }
+      return 'Unlimited';
     }
 
     // Render All Vouchers
@@ -1367,7 +1487,7 @@
                 ${c.showPeriod && period ? `<tr><th>Aktif</th><td>: ${escapeHtml(period)}</td></tr>` : ''}
                 ${c.showName && name.trim() ? `<tr><th>Nama</th><td>: ${escapeHtml(name.trim())}</td></tr>` : ''}
                 ${c.showAlias && alias ? `<tr><th>Alias</th><td>: ${escapeHtml(alias)}</td></tr>` : ''}
-                ${c.showDevice && device ? `<tr><th>Device</th><td>: ${escapeHtml(device)} Perangkat</td></tr>` : ''}
+                ${c.showDevice ? `<tr><th>Device</th><td>: ${formatDevice(device)}</td></tr>` : ''}
                 ${c.showMacBinding && mac ? `<tr><th>Lock MAC</th><td>: ${escapeHtml(mac)}</td></tr>` : ''}
                 ${c.showSpeed && speed ? `<tr><th>Speed</th><td>: ${escapeHtml(speed)}</td></tr>` : ''}
               </tbody>
@@ -1437,7 +1557,6 @@
               return;
             }
           }
-          // If sheetJS empty or failed, fallback to API
           fallbackApiParse(file);
         } catch (err) {
           console.warn("SheetJS error, falling back to server API...", err);
@@ -1603,6 +1722,18 @@
       renderVouchers();
     }
 
+    // Auto fit for mobile viewport
+    function autoFitMobile() {
+      if (window.innerWidth < 992) {
+        const viewportWidth = el.previewViewport ? el.previewViewport.clientWidth - 20 : window.innerWidth - 30;
+        const paperWidth = state.currentPreset.startsWith('thermal') ? (state.currentPreset === 'thermal_58' ? 220 : 300) : 794;
+        if (viewportWidth < paperWidth) {
+          state.zoom = Math.max(0.4, (viewportWidth / paperWidth) * 0.95);
+          applyZoom();
+        }
+      }
+    }
+
     // ==========================================
     // EVENT LISTENERS & BINDINGS
     // ==========================================
@@ -1692,7 +1823,7 @@
       el.inputMaxVouchers.addEventListener('input', updateMax);
       el.inputMaxVouchers.addEventListener('change', updateMax);
 
-      // Layout Sliders (Attach both input and change events for real-time reactivity)
+      // Layout Sliders
       const bindRange = (inputEl, valEl, unit, stateKey) => {
         const handler = (e) => {
           const val = parseFloat(e.target.value);
@@ -1819,15 +1950,18 @@
       });
 
       el.btnZoomOut.addEventListener('click', () => {
-        if (state.zoom > 0.4) {
+        if (state.zoom > 0.3) {
           state.zoom -= 0.15;
           applyZoom();
         }
       });
 
       el.btnZoomFit.addEventListener('click', () => {
-        state.zoom = 1.0;
-        applyZoom();
+        autoFitMobile();
+        if (window.innerWidth >= 992) {
+          state.zoom = 1.0;
+          applyZoom();
+        }
       });
 
       // Copy PIN Codes
@@ -1875,6 +2009,12 @@
         URL.revokeObjectURL(url);
         showToast("File HTML cetak berhasil diunduh!", "text-bg-success");
       });
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth < 992) {
+          autoFitMobile();
+        }
+      });
     }
 
     function applyZoom() {
@@ -1885,11 +2025,10 @@
     // Initialize App with Sample Data on Load
     window.addEventListener('DOMContentLoaded', () => {
       initEventListeners();
-      // Start with sample vouchers for an immediate live preview experience
       state.rawRows = sampleVouchers;
       renderVouchers();
+      autoFitMobile();
     });
   </script>
 </body>
-
 </html>
