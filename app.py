@@ -12,12 +12,14 @@ from openpyxl import load_workbook
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 compress = Compress()
 compress.init_app(app)
 
-dev = "development"
-# dev = "production"
+# dev = "development"
+dev = "production"
 ports = '8080'
 
 # Ensure static and static/tmp directories exist
@@ -47,6 +49,18 @@ def index():
         return voucher(request)
     else:
         return render_template('index.html')
+
+@app.route('/v2', methods=['GET'])
+def v2():
+    return render_template('index.html')
+
+# Integrasi sub-aplikasi V1 (dari direktori v1/app.py) menggunakan DispatcherMiddleware
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
+import v1.app as v1_module
+
+app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
+    '/v1': v1_module.app
+})
 
 @app.route('/api/parse-excel', methods=['POST'])
 def api_parse_excel():
@@ -89,34 +103,51 @@ def create_vouch(data, configs, templs, logo_path=None):
 
 def voucher(request):
     if request.method == 'POST':
-        if 'excel' not in request.files or request.files['excel'].filename == '':
-            return "No Excel file uploaded", 400
+        excel_data_without_first_element = []
 
-        excel_file = request.files['excel']
-        if allowed_file(excel_file.filename, ALLOWED_EXTENSIONS_EXCEL):
-            excel_data = parse_excel_file(excel_file)
-            excel_data_without_first_element = excel_data[1:] if len(excel_data) > 1 else []
+        # 1. Cek apakah ada data raw JSON yang dikirim langsung (misal dari V2 Studio)
+        raw_json = request.form.get('raw_data_json', '').strip()
+        if raw_json:
+            import json
+            try:
+                parsed_json = json.loads(raw_json)
+                if isinstance(parsed_json, list) and len(parsed_json) > 0:
+                    excel_data_without_first_element = parsed_json
+            except Exception as e:
+                logging.error(f"Error parsing raw_data_json: {e}")
 
-            configs = request.form.getlist('config')
-            templs = int(request.form.get('templates', 1))
+        # 2. Jika tidak ada JSON, baca file Excel yang diunggah (dari Form V1)
+        if not excel_data_without_first_element:
+            if 'excel' not in request.files or request.files['excel'].filename == '':
+                return "Tidak ada file Excel yang diunggah", 400
 
-            logo_set = None
-            if 'logo' in request.files and request.files['logo'].filename != '':
-                logo_file = request.files['logo']
-                if allowed_file(logo_file.filename, ALLOWED_EXTENSIONS_IMAGE):
-                    safe_filename = os.path.basename(logo_file.filename)
-                    logo_path = os.path.join(TMP_DIR, safe_filename)
-                    logo_file.save(logo_path)
-                    logo_set = f'/static/tmp/{safe_filename}'
+            excel_file = request.files['excel']
+            if allowed_file(excel_file.filename, ALLOWED_EXTENSIONS_EXCEL):
+                excel_data = parse_excel_file(excel_file)
+                excel_data_without_first_element = excel_data[1:] if len(excel_data) > 1 else []
+            else:
+                return "Format file Excel tidak didukung (harus .xlsx atau .xls)", 400
 
-            if 'namevoucher' in request.form and request.form['namevoucher'].strip():
-                configs.append(f"namevoucher: {request.form['namevoucher'].strip()}")
-            if 'katakata' in request.form and request.form['katakata'].strip():
-                configs.append(f"katakata: {request.form['katakata'].strip()}")
+        configs = request.form.getlist('config')
+        templs = int(request.form.get('templates', 1))
 
-            return create_vouch(excel_data_without_first_element, configs, templs, logo_set)
-        else:
-            return "Invalid file type for Excel file", 400
+        logo_set = None
+        if 'logo' in request.files and request.files['logo'].filename != '':
+            logo_file = request.files['logo']
+            if allowed_file(logo_file.filename, ALLOWED_EXTENSIONS_IMAGE):
+                safe_filename = os.path.basename(logo_file.filename)
+                logo_path = os.path.join(TMP_DIR, safe_filename)
+                logo_file.save(logo_path)
+                logo_set = f'/static/tmp/{safe_filename}'
+        elif 'logo_url' in request.form and request.form['logo_url'].strip():
+            logo_set = request.form['logo_url'].strip()
+
+        if 'namevoucher' in request.form and request.form['namevoucher'].strip():
+            configs.append(f"namevoucher: {request.form['namevoucher'].strip()}")
+        if 'katakata' in request.form and request.form['katakata'].strip():
+            configs.append(f"katakata: {request.form['katakata'].strip()}")
+
+        return create_vouch(excel_data_without_first_element, configs, templs, logo_set)
 
 def cron10():
     try:
@@ -154,4 +185,4 @@ if __name__ == "__main__":
                 minify(app=app, html=False, js=False, cssless=False)
             except Exception:
                 pass
-            app.run(debug=True, threaded=True, port=int(ports))
+            app.run(debug=True, threaded=True, host='0.0.0.0', port=int(ports))

@@ -103,6 +103,40 @@
       color: #fff;
     }
 
+    /* Version View Switcher (V1 vs V2) */
+    .view-switcher-nav {
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      border-radius: 50rem;
+      padding: 3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .view-switch-btn {
+      color: #94a3b8;
+      padding: 4px 12px;
+      font-size: 0.775rem;
+      font-weight: 700;
+      border-radius: 50rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .view-switch-btn:hover {
+      color: #f8fafc;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .view-switch-btn.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(56, 189, 248, 0.4);
+    }
+
     /* Mobile View Toggle Bar */
     .mobile-view-toggle {
       display: flex;
@@ -508,9 +542,17 @@
       vertical-align: top;
     }
 
+    /* Pastikan elemen pertama & terakhir tidak menyisakan margin atas/bawah ekstra */
+    .voucher-card > *:first-child {
+      margin-top: 0 !important;
+    }
+    .voucher-card > *:last-child {
+      margin-bottom: 0 !important;
+    }
+
     .voucher-header {
       text-align: center;
-      margin-bottom: 4px;
+      margin: 0 0 3px 0;
     }
 
     .voucher-logo-img {
@@ -518,7 +560,7 @@
       max-width: 100%;
       object-fit: contain;
       display: block;
-      margin: 0 auto 4px auto;
+      margin: 0 auto 3px auto;
     }
 
     .voucher-top-bar {
@@ -526,8 +568,8 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--v-border-color);
-      padding-bottom: 3px;
-      margin-bottom: 4px;
+      padding-bottom: 2px;
+      margin-bottom: 0;
     }
 
     .voucher-wifi-title {
@@ -547,10 +589,22 @@
 
     .voucher-code-hero {
       text-align: center;
-      padding: 4px 0;
-      margin: 2px 0 6px 0;
+      padding: 2px 4px;
+      margin: 0;
       background: rgba(0, 0, 0, 0.04);
       border-radius: 4px;
+    }
+
+    /* Spacing antar section hanya aktif jika kedua elemen bersebelahan ada */
+    .voucher-header + .voucher-code-hero,
+    .voucher-header + .voucher-qr-wrap,
+    .voucher-code-hero + .voucher-qr-wrap,
+    .voucher-code-hero + .voucher-body-table,
+    .voucher-code-hero + .voucher-footer-notes,
+    .voucher-qr-wrap + .voucher-body-table,
+    .voucher-qr-wrap + .voucher-footer-notes,
+    .voucher-body-table + .voucher-footer-notes {
+      margin-top: 3px;
     }
 
     .voucher-code-text {
@@ -559,7 +613,7 @@
       font-weight: 800;
       letter-spacing: 1.5px;
       margin: 0;
-      line-height: 1.2;
+      line-height: 1.15;
       color: var(--v-text-color);
       word-break: break-all;
     }
@@ -568,7 +622,7 @@
       width: 100%;
       border-collapse: collapse;
       font-size: var(--v-table-size);
-      margin-bottom: 4px;
+      margin: 0;
     }
 
     .voucher-body-table th {
@@ -591,8 +645,8 @@
 
     .voucher-footer-notes {
       border-top: 1px dashed var(--v-border-color);
-      padding-top: 4px;
-      margin-top: 4px;
+      padding-top: 3px;
+      margin: 0;
       font-size: var(--v-notes-size);
       text-align: center;
       font-weight: 700;
@@ -604,7 +658,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 4px 0;
+      margin: 0;
     }
 
     .voucher-qr-wrap img,
@@ -649,6 +703,7 @@
         overflow: visible !important;
       }
 
+      /* Default A4 Sheets */
       .paper-sheet {
         box-shadow: none !important;
         margin: 0 !important;
@@ -678,13 +733,28 @@
   <!-- Top Navbar -->
   <header class="top-navbar no-print">
     <div class="container-fluid d-flex justify-content-between align-items-center">
-      <a href="/" class="brand-logo">
-        <img src="/static/hs_cover.png" alt="Logo" width="28" height="28" class="rounded">
-        <span class="d-none d-sm-inline">Ruijie Voucher Studio <span class="brand-badge">PRO LIVE</span></span>
-        <span class="d-inline d-sm-none">Ruijie Studio <span class="brand-badge">PRO</span></span>
-      </a>
+      <div class="d-flex align-items-center gap-2 gap-md-3">
+        <a href="/v2" class="brand-logo">
+          <img src="/static/hs_cover.png" alt="Logo" width="28" height="28" class="rounded">
+          <span class="d-none d-sm-inline">Ruijie Voucher Studio <span class="brand-badge">PRO LIVE</span></span>
+          <span class="d-inline d-sm-none">Ruijie Studio <span class="brand-badge">PRO</span></span>
+        </a>
+
+        <!-- Version View Switcher -->
+        <div class="view-switcher-nav d-none d-sm-inline-flex">
+          <a href="/v1/" class="view-switch-btn" title="Buka Tampilan V1 (Fungsi Lama)">
+            <i class="bi bi-clock-history me-1"></i>V1 (Fungsi Lama)
+          </a>
+          <a href="/v2" class="view-switch-btn active" title="Sedang di Tampilan V2 (Studio Baru)">
+            <i class="bi bi-stars me-1"></i>V2 (Fungsi Baru)
+          </a>
+        </div>
+      </div>
 
       <div class="d-flex align-items-center gap-1 gap-sm-2">
+        <a href="/v1/" class="btn btn-outline-warning btn-sm fw-semibold d-sm-none" title="Beralih ke V1 Lama">
+          <i class="bi bi-clock-history"></i> V1
+        </a>
         <button type="button" class="btn btn-outline-info btn-sm fw-semibold" id="btnLoadSample" title="Coba dengan data contoh Ruijie">
           <i class="bi bi-lightning-charge-fill"></i> <span class="d-none d-md-inline">Contoh</span>
         </button>
@@ -820,7 +890,7 @@
               <span>Lebar Voucher (Width)</span>
               <span class="value-badge" id="valVoucherWidth">58 mm</span>
             </div>
-            <input type="range" class="form-range-custom" id="rangeVoucherWidth" min="35" max="180" value="58" step="1">
+            <input type="range" class="form-range-custom" id="rangeVoucherWidth" min="0" max="180" value="58" step="1">
           </div>
 
           <!-- Slider: Voucher Min Height -->
@@ -847,7 +917,7 @@
               <span>Padding Dalam Kartu</span>
               <span class="value-badge" id="valVoucherPadding">6 px</span>
             </div>
-            <input type="range" class="form-range-custom" id="rangeVoucherPadding" min="2" max="20" value="6" step="1">
+            <input type="range" class="form-range-custom" id="rangeVoucherPadding" min="0" max="20" value="6" step="1">
           </div>
 
           <!-- Slider: Margin Kertas -->
@@ -1050,8 +1120,12 @@
 
       <!-- Sidebar Footer Actions & Trakteer / Author Info -->
       <div class="p-3 border-top border-secondary bg-dark no-print mt-auto">
-        <button type="button" class="btn btn-primary w-100 fw-bold py-2 shadow mb-3" id="btnPrintSidebar">
+        <button type="button" class="btn btn-primary w-100 fw-bold py-2 shadow mb-2" id="btnPrintSidebar">
           <i class="bi bi-printer-fill me-1"></i> CETAK VOUCHER (PRINT)
+        </button>
+
+        <button type="button" class="btn btn-outline-warning w-100 fw-bold py-2 shadow-sm mb-3" id="btnOpenV1Modal" title="Cetak data ini langsung lewat template mesin V1 (A4 / Thermal lama)">
+          <i class="bi bi-clock-history me-1"></i> Cetak via Mesin V1 (Fungsi Lama)
         </button>
 
         <!-- Trakteer & Author Info -->
@@ -1109,6 +1183,48 @@
 
     </main>
 
+  </div>
+
+  <!-- Modal Cetak via Mesin V1 (Fungsi Lama) -->
+  <div class="modal fade no-print" id="modalV1Print" tabindex="-1" aria-labelledby="modalV1PrintLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-light border-secondary">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title fw-bold" id="modalV1PrintLabel">
+            <i class="bi bi-clock-history text-warning me-2"></i>Cetak via Mesin V1 (Fungsi Lama)
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-secondary small mb-3">
+            Gunakan data voucher yang saat ini aktif di V2 Studio untuk langsung dicetak menggunakan template asli bawaan V1 (tanpa perlu upload ulang).
+          </p>
+          <div class="mb-3">
+            <label class="form-label text-light fw-semibold small">Pilih Format Template V1</label>
+            <select class="form-select bg-dark text-light border-secondary" id="selectV1Template">
+              <option value="1" selected>Template 1: A4 210mm x 297mm (Grid Multi)</option>
+              <option value="2">Template 2: A4 210mm x 297mm (2-Kolom Kompak)</option>
+              <option value="3">Template 3: Thermal Roll 80mm x 200mm</option>
+              <option value="4">Template 4: Thermal Roll 80mm x 200mm (Cafe Style)</option>
+            </select>
+          </div>
+          <div class="alert alert-secondary bg-dark-subtle border-secondary small text-light p-2 mb-0">
+            <i class="bi bi-info-circle me-1 text-info"></i> Tampilan cetak akan dibuka di tab baru dan dialog print browser langsung muncul seperti di versi V1.
+          </div>
+        </div>
+        <div class="modal-footer border-secondary d-flex justify-content-between">
+          <a href="/v1/" class="btn btn-outline-light btn-sm">
+            <i class="bi bi-box-arrow-up-right me-1"></i> Buka Halaman V1
+          </a>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-warning btn-sm fw-bold px-3" id="btnExecuteV1Print">
+              <i class="bi bi-printer-fill me-1"></i> Cetak Sekarang
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Toast Notification Container -->
@@ -1326,7 +1442,7 @@
       const c = state.config;
 
       root.style.setProperty('--v-font-family', c.fontFamily);
-      root.style.setProperty('--v-width', `${c.voucherWidth}mm`);
+      root.style.setProperty('--v-width', c.voucherWidth > 0 ? `${c.voucherWidth}mm` : 'auto');
       root.style.setProperty('--v-min-height', c.voucherMinHeight > 0 ? `${c.voucherMinHeight}mm` : 'auto');
       root.style.setProperty('--v-margin', `${c.voucherMargin}mm`);
       root.style.setProperty('--v-padding', `${c.voucherPadding}px`);
@@ -1460,44 +1576,61 @@
         const speed = row[16] || '';
         const num = idx + 1;
 
-        // Build Voucher Card HTML
-        html += `
-          <div class="voucher-card" data-code="${code}">
+        // Header: hanya jika logo atau wifiName ada
+        let headerHtml = '';
+        const hasWifi = Boolean(c.wifiName && c.wifiName.trim());
+        const hasLogo = Boolean(state.logoDataUrl);
+        if (hasLogo || hasWifi) {
+          headerHtml = `
             <div class="voucher-header">
-              ${state.logoDataUrl ? `<img src="${state.logoDataUrl}" class="voucher-logo-img" alt="Logo">` : ''}
-              
-              ${c.wifiName ? `
+              ${hasLogo ? `<img src="${state.logoDataUrl}" class="voucher-logo-img" alt="Logo">` : ''}
+              ${hasWifi ? `
                 <div class="voucher-top-bar">
                   <h2 class="voucher-wifi-title">${escapeHtml(c.wifiName)}</h2>
                   ${c.showNumber ? `<span class="voucher-num-badge">[${num}]</span>` : ''}
                 </div>
               ` : ''}
             </div>
+          `;
+        }
 
+        // Table rows: hanya render table jika ada minimal 1 baris aktif dengan data
+        let rowsHtml = '';
+        if (c.showUserGroup && ugroup) rowsHtml += `<tr><th>UGroup</th><td>: ${escapeHtml(ugroup)}</td></tr>`;
+        if (c.showPrice && price) rowsHtml += `<tr><th>Harga</th><td>: ${formatPrice(price)}</td></tr>`;
+        if (c.showPeriod && period) rowsHtml += `<tr><th>Aktif</th><td>: ${escapeHtml(period)}</td></tr>`;
+        if (c.showName && name.trim()) rowsHtml += `<tr><th>Nama</th><td>: ${escapeHtml(name.trim())}</td></tr>`;
+        if (c.showAlias && alias) rowsHtml += `<tr><th>Alias</th><td>: ${escapeHtml(alias)}</td></tr>`;
+        if (c.showDevice) rowsHtml += `<tr><th>Device</th><td>: ${formatDevice(device)}</td></tr>`;
+        if (c.showMacBinding && mac) rowsHtml += `<tr><th>Lock MAC</th><td>: ${escapeHtml(mac)}</td></tr>`;
+        if (c.showSpeed && speed) rowsHtml += `<tr><th>Speed</th><td>: ${escapeHtml(speed)}</td></tr>`;
+
+        const tableHtml = rowsHtml ? `
+          <table class="voucher-body-table">
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        ` : '';
+
+        const qrHtml = c.showQrCode ? `<div class="voucher-qr-wrap" id="qr_${idx}"></div>` : '';
+
+        const footerHtml = (c.footerNotes && c.footerNotes.trim()) ? `
+          <div class="voucher-footer-notes">
+            ${escapeHtml(c.footerNotes)}
+          </div>
+        ` : '';
+
+        // Build Voucher Card HTML
+        html += `
+          <div class="voucher-card" data-code="${code}">
+            ${headerHtml}
             <div class="voucher-code-hero">
               <div class="voucher-code-text">${escapeHtml(code)}</div>
             </div>
-
-            ${c.showQrCode ? `<div class="voucher-qr-wrap" id="qr_${idx}"></div>` : ''}
-
-            <table class="voucher-body-table">
-              <tbody>
-                ${c.showUserGroup && ugroup ? `<tr><th>UGroup</th><td>: ${escapeHtml(ugroup)}</td></tr>` : ''}
-                ${c.showPrice && price ? `<tr><th>Harga</th><td>: ${formatPrice(price)}</td></tr>` : ''}
-                ${c.showPeriod && period ? `<tr><th>Aktif</th><td>: ${escapeHtml(period)}</td></tr>` : ''}
-                ${c.showName && name.trim() ? `<tr><th>Nama</th><td>: ${escapeHtml(name.trim())}</td></tr>` : ''}
-                ${c.showAlias && alias ? `<tr><th>Alias</th><td>: ${escapeHtml(alias)}</td></tr>` : ''}
-                ${c.showDevice ? `<tr><th>Device</th><td>: ${formatDevice(device)}</td></tr>` : ''}
-                ${c.showMacBinding && mac ? `<tr><th>Lock MAC</th><td>: ${escapeHtml(mac)}</td></tr>` : ''}
-                ${c.showSpeed && speed ? `<tr><th>Speed</th><td>: ${escapeHtml(speed)}</td></tr>` : ''}
-              </tbody>
-            </table>
-
-            ${c.footerNotes ? `
-              <div class="voucher-footer-notes">
-                ${escapeHtml(c.footerNotes)}
-              </div>
-            ` : ''}
+            ${qrHtml}
+            ${tableHtml}
+            ${footerHtml}
           </div>
         `;
       });
@@ -1829,7 +1962,10 @@
           const val = parseFloat(e.target.value);
           state.config[stateKey] = val;
           if (valEl) {
-            valEl.innerText = (stateKey === 'voucherMinHeight' && val === 0) ? 'Otomatis' : `${val} ${unit}`;
+            valEl.innerText = (stateKey === 'voucherMinHeight' && val === 0) ? 'Otomatis' :
+                              (stateKey === 'voucherWidth' && val === 0) ? 'Otomatis (Fit)' :
+                              (stateKey === 'voucherPadding' && val === 0) ? '0 px (Rapat)' :
+                              `${val} ${unit}`;
           }
           updateCssVariables();
         };
@@ -1933,6 +2069,71 @@
       };
       el.btnPrintTop.addEventListener('click', triggerPrint);
       el.btnPrintSidebar.addEventListener('click', triggerPrint);
+
+      // Modal Cetak Mesin V1 (Fungsi Lama)
+      const btnOpenV1Modal = document.getElementById('btnOpenV1Modal');
+      const btnExecuteV1Print = document.getElementById('btnExecuteV1Print');
+      const selectV1Template = document.getElementById('selectV1Template');
+      const modalV1El = document.getElementById('modalV1Print');
+      const modalV1 = (modalV1El && typeof bootstrap !== 'undefined') ? new bootstrap.Modal(modalV1El) : null;
+
+      if (btnOpenV1Modal && modalV1) {
+        btnOpenV1Modal.addEventListener('click', () => {
+          if (state.filteredRows.length === 0) {
+            showToast("Belum ada data voucher untuk dicetak!", "text-bg-warning");
+            return;
+          }
+          modalV1.show();
+        });
+      }
+
+      if (btnExecuteV1Print) {
+        btnExecuteV1Print.addEventListener('click', () => {
+          if (state.filteredRows.length === 0) {
+            showToast("Tidak ada voucher untuk dicetak!", "text-bg-warning");
+            return;
+          }
+
+          // Kirim data ke /v1 via POST form di tab baru
+          const form = document.createElement('form');
+          form.method = 'POST';
+          form.action = '/v1/';
+          form.target = '_blank';
+
+          const addInput = (name, val) => {
+            const inp = document.createElement('input');
+            inp.type = 'hidden';
+            inp.name = name;
+            inp.value = val;
+            form.appendChild(inp);
+          };
+
+          addInput('templates', selectV1Template ? selectV1Template.value : '1');
+          addInput('raw_data_json', JSON.stringify(state.filteredRows));
+          if (state.config.wifiName) addInput('namevoucher', state.config.wifiName);
+          if (state.config.footerNotes) addInput('katakata', state.config.footerNotes);
+          if (state.logoDataUrl) addInput('logo_url', state.logoDataUrl);
+
+          // Config options
+          const c = state.config;
+          if (c.showUserGroup) addInput('config', 'userGroup');
+          if (c.showPrice) addInput('config', 'price');
+          if (c.showNumber) addInput('config', 'number');
+          if (c.showPeriod) addInput('config', 'period');
+          if (c.showName) addInput('config', 'name');
+          if (c.showAlias) addInput('config', 'alias');
+          if (c.showDevice) addInput('config', 'device');
+          if (c.showMacBinding) addInput('config', 'macBinding');
+          if (c.showSpeed) addInput('config', 'uploadDownload');
+
+          document.body.appendChild(form);
+          form.submit();
+          document.body.removeChild(form);
+
+          if (modalV1) modalV1.hide();
+          showToast("Membuka template cetak V1 di tab baru...", "text-bg-success");
+        });
+      }
 
       // Reset Button
       el.btnResetSettings.addEventListener('click', () => {

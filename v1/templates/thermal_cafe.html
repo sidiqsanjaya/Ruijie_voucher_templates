@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Create Voucher Templates, CP INAdik">
+    <title>Thermal cafe Voucher</title>
+    <link href="/static/hs_cover.png" rel="icon">
+    <style>
+        body {
+            color: #000000;
+            background-color: #FFFFFF;
+            font-size: 14px;
+            font-family: 'Helvetica', Arial, sans-serif;
+            margin: 1px;
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+            display: block;
+            flex-wrap: wrap;
+            justify-content: flex-center;
+            align-items: flex-start;
+        }
+
+        table.voucher {
+            /* border: 2px solid black; */
+            margin: 2px 0;
+            padding: 5px;
+            box-sizing: border-box;
+            width: 80mm;              /* FIX LEBAR THERMAL 80MM */
+            max-width: 80mm;          /* mencegah overflow */
+            background: #fff;
+        }
+
+        @page {
+            size: 80mm;
+            margin: 4mm;
+        }
+
+        @media print {
+            table { page-break-after: auto }
+            tr    { page-break-inside: avoid; page-break-after: auto }
+            td    { page-break-inside: avoid; page-break-after: auto }
+            thead { display: table-header-group }
+            tfoot { display: table-footer-group }
+        }
+
+        #num {
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 15px;
+            margin: 0 0 0px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            /* border: 1px solid #000; */
+            
+            padding: 1px;
+            text-align: left;
+        } 
+        td {
+            /* border: 1px solid #000; */
+            padding: 1px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body onload="window.print()">
+<!-- <body>     -->
+    {% set num = namespace(value=0) %}
+    ----------------------------------------------------------------
+    {% for section in data %}
+        {% if section[2] == 'In use' or section[2] == 'Expired' %}
+
+        {% else %}
+            {% set num.value = num.value + 1 %}
+            
+            {% if logo_path %}
+            <table class="voucher">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: center; border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+                            <img src="{{ logo_path }}" alt="Logo" style="max-height: 40px; margin: 0; padding: 0;">
+                        </th>
+                    </tr>
+                </thead>
+            {% else %}
+            <table class="voucher">
+            {% endif %}
+                <thead>
+                    <tr>
+                        {% set namevoucher_found = namespace(value=false) %}
+                        {% set namevoucher_name = namespace(value='') %}
+                        {% set katakata_found = namespace(value=false) %}
+                        {% set katakata_name = namespace(value='') %}
+                        {% for config in configs %}
+                            {% if 'namevoucher:' in config and not namevoucher_found.value %}
+                                {% set namevoucher_found.value = true %}
+                                {% set namevoucher_name.value = config.split(': ')[1] %}
+                            {% endif %}
+                            {% if 'katakata:' in config and not katakata_found.value %}
+                                {% set katakata_found.value = true %}
+                                {% set katakata_name.value = config.split(': ')[1] %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if namevoucher_found.value %}
+                            <th colspan="2" style="text-align: center;">
+                                <table style="width: 100%; border: none; border-bottom: 1px solid black; margin: 0; padding: 0;">
+                                    <tr>
+                                        <td style="text-align: left; border: none; padding: 0;">
+                                            <h1 style="margin: 0; display: inline;">{{ namevoucher_name.value }} </h1>
+                                        </td>
+                                        {% if 'number' in configs %}
+                                        <td style="text-align: right; border: none; padding: 0;">
+                                            <h1 style="margin: 0; display: inline;">[{{ num.value }}]</h1>
+                                        </td>
+                                        {% endif %}
+                                    </tr>
+                                </table>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th colspan="2" style="text-align: center;">
+                                <h1>{{ section[0] }}</h1>
+                            </th>
+                        {% else %}
+                            <tr>
+                                <th colspan="2" style="text-align: center;">
+                                    <h1>{{ section[0] }}</h1>
+                                </th>
+                            
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    {% if 'userGroup' in configs %}
+                    <tr>
+                        <th>UGroup</th>
+                        <td>: {{ section[1] }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if 'price' in configs %}
+                        {% if not section[4] %}
+                        <tr>
+                            <th> Harga </th>
+                            <td>: Rp. -</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <th> Harga </th>
+                            <td>: Rp.{{ (section[4]|int) * 1000 }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endif %}
+                    {% if 'period' in configs %}
+                    <tr>
+                        <th>Aktif</th>
+                        <td>: {{ section[5] }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if 'name' in configs %}
+                    <tr>
+                        <th>Nama</th>
+                        <td>: {{ section[6] }} {{ section[7] }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if 'macBinding' in configs %}
+                    <tr>
+                        <th>Lock Mac</th>
+                        <td>: {{ section[14] }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if 'alias' in configs %}
+                    <tr>
+                        <th>Alias</th>
+                        <td>: {{ section[8] }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if 'device' in configs %}
+                    <tr>
+                        <th>Device</th>
+                        <td>: {{ section[14] }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if 'uploadDownload' in configs %}
+                    <tr>
+                        <th>Speed</th>
+                        <td>: {{ section[16] }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if katakata_found.value %}
+                    <tr>
+                        <td colspan="2" style="padding:0; text-align:center;">
+                            <!-- hr yang full-width dan tipis -->
+                            <hr style="border:0; border-top:1px solid #000; margin:6px 0; width:100%;">
+                            <!-- teks judul/kalimat, bisa ditebalkan atau diubah ukurannya -->
+                            <div style="font-size:12px; font-weight:700; margin:2px 0;">{{ katakata_name.value }}</div>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        {% endif %}
+        ----------------------------------------------------------------
+    {% endfor %}
+</body>
+</html>
